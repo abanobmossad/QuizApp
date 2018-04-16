@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "436653122644",
+    "firebase_url": "https://quiz-your-brain.firebaseio.com",
+    "project_id": "quiz-your-brain",
+    "storage_bucket": "quiz-your-brain.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436653122644:android:3423f40f64bc6318",
+        "android_client_info": {
+          "package_name": "com.example.abano.quizyourbrain"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "436653122644-kkuivgbro7sv15a0akk2iecpndbv6dpa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6ejk8hokTlZG5DAtE55ptXduu8BuNY_w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
