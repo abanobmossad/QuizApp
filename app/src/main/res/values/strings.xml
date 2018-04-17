@@ -27,6 +27,26 @@
     <string name="category">History &amp; Art</string>
     <string name="question_number">Question 5/7</string>
     <string name="skip">Skip</string>
-    <string name="score">Score    </string>
+    <string name="ans1">answer 1</string>
+    <string name="ans2">answer 2</string>
+    <string name="ans3">answer 3</string>
+    <string name="ans4">answer 4</string>
 
+    <string name="score">Score</string>
+
+    <!-- main activity -->
+
+    <string name="stratBtn">Start Questions</string>
+    <string name="AddBtn">Add Questions</string>
+    <string name="title_activity_add_questions">AddQuestions</string>
+
+    <!--Add question activity -->
+    <string name="questionTitle">Add question title</string>
+    <string name="questionCategory">Add question category</string>
+    <string name="activeMood">Is question active</string>
+    <string name="saveBtn">Save</string>
+    <array name="question_type">
+        <item>MCQ</item>
+        <item>Complete </item>
+    </array>
 </resources>
