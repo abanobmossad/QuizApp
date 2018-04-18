@@ -1,7 +1,7 @@
 package com.example.abano.quizyourbrain.QuestionControl;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +10,6 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.abano.quizyourbrain.Models.Question;
 import com.example.abano.quizyourbrain.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,9 +53,9 @@ public class AddQuestion extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(question_title) && !TextUtils.isEmpty(question_category) && !TextUtils.isEmpty(question_type)) {
 // Write a message to the database
-           String id = questionsDatabase.push().getKey();
-            Question ques = new Question(id,question_title,question_category,question_type,isActive,"");
-            questionsDatabase.child(id).setValue(ques);
+//           String id = questionsDatabase.push().getKey();
+//            Question ques = new Question(id,question_title,question_category,question_type,isActive,"");
+//            questionsDatabase.child(id).setValue(ques);
 
             Toast.makeText(this, "Question created successfully", Toast.LENGTH_LONG).show();
         } else {
