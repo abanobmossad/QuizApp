@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "231330350835",
+    "firebase_url": "https://quiz-challenger.firebaseio.com",
+    "project_id": "quiz-challenger",
+    "storage_bucket": "quiz-challenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:231330350835:android:3423f40f64bc6318",
+        "android_client_info": {
+          "package_name": "com.example.abano.quizyourbrain"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "231330350835-5hv97v6pilut77u5v6i8seokaqm99n5j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.abano.quizyourbrain",
+            "certificate_hash": "c3994e29bfc4d801340c3210dc9af72cfbc905f2"
+          }
+        },
+        {
+          "client_id": "231330350835-f8njj0gf0jmivddadgok8o1kstbkrcf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.abano.quizyourbrain",
+            "certificate_hash": "411435482234769c97874bb5e71ae06018a54917"
+          }
+        },
+        {
+          "client_id": "231330350835-d827panjm4p6rtrjdees7pve37oodhov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAByJc23d6_Mj95Aub-bU6lFEmkdxgvkU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "231330350835-d827panjm4p6rtrjdees7pve37oodhov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
