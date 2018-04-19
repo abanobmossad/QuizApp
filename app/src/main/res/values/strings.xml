@@ -8,7 +8,7 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
+    <string name="email">E-mail</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -45,6 +45,10 @@
     <string name="questionCategory">Add question category</string>
     <string name="activeMood">Is question active</string>
     <string name="saveBtn">Save</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log In</string>
+    <string name="register">Register</string>
+    <string name="todo">TODO</string>
     <array name="question_type">
         <item>MCQ</item>
         <item>Complete </item>
