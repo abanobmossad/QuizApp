@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#13B6E2</color>
+    <color name="buttonWrong">#f44c95</color>
     <color name="mainBackgroundColor">#fff</color>
     <color name="action_bar_bkgnd">#56e25b</color>
     <color name="textBgColor">#fff</color>
