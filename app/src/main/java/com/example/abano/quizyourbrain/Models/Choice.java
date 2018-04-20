@@ -1,23 +1,20 @@
 package com.example.abano.quizyourbrain.Models;
 
-public class Choice {
+import android.support.design.internal.ParcelableSparseArray;
+
+public class Choice extends ParcelableSparseArray{
     private String ansTitle;
     private int isRight;
-    private int qustionId;
-    private int choiceId;
+    private Long qustionId;
 
-    public Choice(int choicId, int qustionId, String ansTitle, int isRight) {
+    public Choice(Long qustionId, String ansTitle, int isRight) {
         this.ansTitle = ansTitle;
         this.isRight = isRight;
         this.qustionId = qustionId;
-        this.choiceId = choicId;
     }
 
-    public int getChoiceId() {
-        return choiceId;
-    }
 
-    public int getQustionId() {
+    public Long getQustionId() {
         return qustionId;
     }
 

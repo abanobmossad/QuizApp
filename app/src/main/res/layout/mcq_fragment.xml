@@ -59,53 +59,14 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/answer1"
+    <LinearLayout
+        android:id="@+id/answersContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/buttonshape"
-        android:text="@string/ans1"
-        android:textColor="@color/textBgColor"
-        android:textSize="20sp"
-        android:layout_weight="0.2"
-        />
-    <Button
-        android:id="@+id/answer2"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/buttonshape"
-        android:text="@string/ans1"
-        android:textColor="@color/textBgColor"
-        android:textSize="20sp"
-        android:layout_weight="0.2"
-        />
-    <Button
-        android:id="@+id/answer3"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/buttonshape"
-        android:text="@string/ans1"
-        android:textColor="@color/textBgColor"
-        android:textSize="20sp"
-        android:layout_weight="0.2"
-        />
-    <Button
-        android:id="@+id/answer4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/buttonshape"
-        android:text="@string/ans1"
-        android:textColor="@color/textBgColor"
-        android:textSize="20sp"
-        android:layout_weight="0.2"
-        />
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="vertical">
 
-
-
+    </LinearLayout>
 
 
 </LinearLayout>

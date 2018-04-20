@@ -1,5 +1,7 @@
 package com.example.abano.quizyourbrain.Models;
 
+import java.util.ArrayList;
+
 public class Question {
     private Long id;
     private int isActive;
@@ -8,8 +10,8 @@ public class Question {
     private String questionTitle;
     private String questionType;
     private Object __meta__;
-
-    public Question(Object __meta__, Long id, String questionTitle, String category, String questionType, int isActive, String image) {
+    private ArrayList<Choice> choice;
+    public Question(Object __meta__, Long id, String questionTitle, String category, String questionType, int isActive, String image,ArrayList<Choice> choice) {
         this.id = id;
         this.isActive = isActive;
         this.category = category;
@@ -17,7 +19,12 @@ public class Question {
         this.__meta__ = __meta__;
         this.questionType = questionType;
         this.questionTitle = questionTitle;
+        this.choice=choice;
 
+    }
+
+    public ArrayList<Choice> getChoices() {
+        return choice;
     }
 
     public Long getId() {

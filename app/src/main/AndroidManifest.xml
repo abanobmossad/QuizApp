@@ -27,8 +27,7 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".QuizMainActivity"
-            android:label="@string/title_activity_quiz_main"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/title_activity_quiz_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
