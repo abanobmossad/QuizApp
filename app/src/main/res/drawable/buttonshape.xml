@@ -2,9 +2,19 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/buttonDefault" />
+            <solid android:color="#1a81b3" />
             <corners android:radius="14dp" />
         </shape>
     </item>
 
+    <item
+        android:bottom="5dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/buttonDefault" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
 </layer-list>
