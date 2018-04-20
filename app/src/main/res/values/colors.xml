@@ -2,12 +2,12 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="mainBackgroundColor">#7ED7EE</color>
+    <color name="colorAccent">#13B6E2</color>
+    <color name="mainBackgroundColor">#fff</color>
     <color name="action_bar_bkgnd">#56e25b</color>
     <color name="textBgColor">#fff</color>
     <color name="textFgColor">#030303</color>
     <color name="mainQuestionColor">#f98c8c8c</color>
-    <color name="buttonDefault">#13B6E2</color>
+    <color name="buttonDefault">#0C9EE5</color>
     <color name="buttonRight">#01CE6A</color>
 </resources>

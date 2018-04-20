@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context="com.example.abano.quizyourbrain.QuestionControl.AddQuestion">
+    tools:context="com.example.abano.quizyourbrain.QuestionControl.AddQuestion"
+    android:background="@color/textBgColor"
+    >
 
     <ImageView
         android:id="@+id/questionImage"

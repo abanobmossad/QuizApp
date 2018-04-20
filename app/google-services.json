@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "231330350835-5hv97v6pilut77u5v6i8seokaqm99n5j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.abano.quizyourbrain",
+            "certificate_hash": "c3994e29bfc4d801340c3210dc9af72cfbc905f2"
+          }
+        },
+        {
           "client_id": "231330350835-f8njj0gf0jmivddadgok8o1kstbkrcf1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
