@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,6 @@ import java.util.Collections;
 public class QuizMainActivity extends AppCompatActivity {
     private static ArrayList<Question> allQuestions = new ArrayList<>();
     private ArrayList<Question> comQuestion = new ArrayList<>();
-    private ArrayList<String> choices_list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +47,10 @@ public class QuizMainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w("firebasequestion", "Failed to read value.", error.toException());
+                Log.w("firebaseQuestion", "Failed to read value.", error.toException());
             }
         });
-        Toast.makeText(this,"Start the quiz",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Start the quiz", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -78,43 +78,46 @@ public class QuizMainActivity extends AppCompatActivity {
         String choiceTitle4 = (String) questionSnapshot.child("choices").child("ansTitle4").getValue();
         int choiceIsRight4 = (boolean) questionSnapshot.child("choices").child("isRight4").getValue() ? 1 : 0;
         Choice choice4 = new Choice(id, choiceTitle4, choiceIsRight4);
-        Log.d("choicesCheck", choiceTitle1);
-        questionChoices.add(choice1);
-        questionChoices.add(choice2);
-        questionChoices.add(choice3);
-        questionChoices.add(choice4);
+        if (choiceTitle1 !=null)
+            questionChoices.add(choice1);
+        if (choiceTitle2 != null)
+            questionChoices.add(choice2);
+        if (choiceTitle3 !=null)
+            questionChoices.add(choice3);
+        if (choiceTitle4 !=null)
+            questionChoices.add(choice4);
         Question question = new Question(__meta__, id, question_title, question_category, question_type, isActive, image, questionChoices);
-        if (question.getQuestionType().equals("MCQ")) {
-            allQuestions.add(question);
-        } else {
-            comQuestion.add(question);
-        }
         if (isActive == 1) {
-            allQuestions.add(question);
+            if (question_type.equals("MCQ")) {
+                Log.d("MCQ:: ", question_type);
+                allQuestions.add(question);
+            } else {
+                Log.d("complete:: ", question_type);
+                comQuestion.add(question);
+            }
         }
     }
 
     public void startQuestions(View view) {
         Collections.shuffle(allQuestions);
         Collections.shuffle(comQuestion);
-
-        Log.d("typeee", "" + allQuestions.get(0).getQuestionType());
-        Log.d("typeee", "" + allQuestions.get(1).getQuestionType());
-        Log.d("typeee", "" + allQuestions.get(2).getQuestionType());
-        Log.d("typeee", "" + allQuestions.get(3).getQuestionType());
-        Log.d("typeee", "" + allQuestions.get(4).getQuestionType());
-        Log.d("typeee", "" + allQuestions);
         allQuestions.addAll(comQuestion);
+        Log.d("allQuestions", "" + allQuestions.get(0).getQuestionType());
+        Log.d("allQuestions", "" + allQuestions.get(1).getQuestionType());
+        Log.d("allQuestions", "" + allQuestions.get(2).getQuestionType());
+        Log.d("questionsSize", " " + allQuestions.size());
 
-        Log.d("typeee", "" + comQuestion.get(0).getQuestionType());
-        Log.d("typeee", "" + comQuestion.get(1).getQuestionType());
 
-        Log.d("typeee", "" + comQuestion);
+        Log.d("completeQuestions", "" + comQuestion.get(0).getQuestionType());
+        Log.d("completeQuestions", "" + comQuestion.get(1).getQuestionType());
+        Log.d("completeQuestions", " " + comQuestion.size());
+
+
         if (isOnline()) {
             FragmentManager manager = getSupportFragmentManager();
             Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
             if (fragment == null) {
-                fragment = McqFragment.newInstance(allQuestions.get(0), 0, choices_list);
+                fragment = McqFragment.newInstance(allQuestions.get(0), 0);
                 manager.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
             }
         } else {
@@ -136,5 +139,25 @@ public class QuizMainActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            finish();
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 3000);
     }
 }

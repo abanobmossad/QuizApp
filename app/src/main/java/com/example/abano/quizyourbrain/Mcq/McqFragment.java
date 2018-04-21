@@ -5,11 +5,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +23,8 @@ import com.example.abano.quizyourbrain.QuizMainActivity;
 import com.example.abano.quizyourbrain.R;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -57,7 +62,7 @@ public class McqFragment extends Fragment {
 
 
     // TODO: Rename and change types and number of parameters
-    public static McqFragment newInstance(Question question, int questionNumber, ArrayList<String> choices_list) {
+    public static McqFragment newInstance(Question question, int questionNumber) {
         McqFragment fragment = new McqFragment();
         Bundle args = new Bundle();
         args.putString(QUESTION_TITLE, question.getQuestionTitle());
@@ -116,10 +121,75 @@ public class McqFragment extends Fragment {
         // if the question is mcq
         if (questionType.equals("MCQ")) {
             displayChoices(view);
+        } else if (questionType.equals("complete")) {
+            displayCompleteFeilds(view);
         }
 
 
         return view;
+    }
+
+    private void displayCompleteFeilds(View view) {
+        LinearLayout answerContainer = (LinearLayout) view.findViewById(R.id.answersContainer);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 10, 0, 0);
+
+        int i = 0;
+
+        for (final Choice choice : choices_list) {
+
+            // making the complete editText
+            final EditText chET = new EditText(getContext());
+            chET.setLayoutParams(params);
+            chET.setHint("Enter the answer number ");
+            chET.setBackground(getResources().getDrawable(R.drawable.edit_text_style));
+            chET.setId(i);
+            chET.setTextColor(getResources().getColor(R.color.textFgColor));
+            answerContainer.addView(chET);
+            final EditText actionText = ((EditText) view.findViewById(i));
+
+            // adding action
+            actionText.addTextChangedListener(new TextWatcher() {
+                Timer timer;
+                boolean wrongAnswer ;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    // user is typing: reset already started timer (if existing)
+                    if (timer != null) {
+                        timer.cancel();
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    // user typed: start the timer
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (actionText.getText().toString().equals(choice.getAnsTitle())) {
+                                generateNextQuestion(questionNumber);
+                            } else {
+                                wrongAnswer=true;
+                            }
+                        }
+                    }, 600); // 600ms delay before the timer executes the „run“ method from TimerTask
+                    if (wrongAnswer){
+                        Toast.makeText(getContext(),"Sorry it's a wrong answer! please try again",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            i++;
+        }
+
+
     }
 
     private void displayChoices(View view) {
@@ -150,6 +220,7 @@ public class McqFragment extends Fragment {
                 public void onClick(View view) {
                     if (choice.getIsRight() == 1) {
                         rightAnswerEffect(actionBtn);
+                        generateNextQuestion(questionNumber);
                     } else {
                         wrongAnswerEffect(actionBtn);
                         // show the right answer
@@ -173,16 +244,16 @@ public class McqFragment extends Fragment {
     }
 
     // set the data and display
-    private void generateNextQuestion(ArrayList<String> choices_list, final int questionNumber) {
+    private void generateNextQuestion(final int questionNumber) {
 
         choices_list.clear();
 
         int next_question = questionNumber + 1;
         Question nextQuestion = QuizMainActivity.getAllQuestions().get(next_question);
-        Fragment nextFragment = McqFragment.newInstance(nextQuestion, next_question, choices_list);
+        Fragment nextFragment = McqFragment.newInstance(nextQuestion, next_question);
 
 
-        getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).addToBackStack(null).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
 
 
     }
