@@ -1,9 +1,9 @@
-package com.example.abano.quizyourbrain.Mcq;
+package com.example.abano.quizyourbrain;
 
 
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,13 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
-import com.example.abano.quizyourbrain.QuizMainActivity;
-import com.example.abano.quizyourbrain.R;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -29,11 +28,11 @@ import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link McqFragment#newInstance} factory method to
+ * Use the {@link QuestionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 
-public class McqFragment extends Fragment {
+public class QuestionFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String CHOICES_LIST = "CHOICES_LIST";
@@ -44,26 +43,29 @@ public class McqFragment extends Fragment {
     private static final String QUESTION_CATEGORY = "QUESTIONS_CATEGORY";
     private static final String QUESTION_TITLE = "QUESTIONS_TITLE";
     private static final String QUESTION_TYPE = "QUESTIONS_TYPE";
+    private static final String QUESTION_TIME = "QUESTION_TIME";
 
     // TODO: Rename and change types of parameters
     private Long questionId;
     private int questionIsActive;
+    private int questionTime;
     private String questionImage;
     private String questionCategory;
     private String questionTitle;
     private String questionType;
     private int questionNumber;
     private ArrayList<Choice> choices_list;
+    private ProgressBar questionTimeBar;
 
 
-    public McqFragment() {
+    public QuestionFragment() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static McqFragment newInstance(Question question, int questionNumber) {
-        McqFragment fragment = new McqFragment();
+    public static QuestionFragment newInstance(Question question, int questionNumber) {
+        QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
         args.putString(QUESTION_TITLE, question.getQuestionTitle());
         args.putString(QUESTION_TYPE, question.getQuestionType());
@@ -72,6 +74,7 @@ public class McqFragment extends Fragment {
         args.putInt(QUESTION_IS_ACTIVE, question.getIsActive());
         args.putLong(QUESTION_ID, question.getId());
         args.putInt(QUESTION_NUMBER, questionNumber);
+        args.putInt(QUESTION_TIME, question.getTime());
         args.putParcelableArrayList(CHOICES_LIST, question.getChoices());
         fragment.setArguments(args);
         return fragment;
@@ -89,22 +92,19 @@ public class McqFragment extends Fragment {
             questionIsActive = getArguments().getInt(QUESTION_IS_ACTIVE);
             questionId = getArguments().getLong(QUESTION_ID);
             questionNumber = getArguments().getInt(QUESTION_NUMBER);
-
+            questionTime = getArguments().getInt(QUESTION_TIME);
             // choices arguments
             choices_list = getArguments().getParcelableArrayList(CHOICES_LIST);
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // display next question
-//         generateQuestions(choices_list, questionNumber, right_answers_list);
-
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.mcq_fragment, container, false);
+        View view = inflater.inflate(R.layout.question_fragment, container, false);
         // main question title
         TextView mQuestionEv = (TextView) view.findViewById(R.id.main_question);
         mQuestionEv.setText(questionTitle);
@@ -116,15 +116,26 @@ public class McqFragment extends Fragment {
         TextView numberTv = (TextView) view.findViewById(R.id.question_number);
         String num = "Question(" + (questionNumber + 1) + "/7" + ")";
         numberTv.setText(num);
+        // get question time
+        questionTimeBar = (ProgressBar) view.findViewById(R.id.question_time);
+        questionTimeBar.setMax(questionTime * 1000);
+        questionTimeBar.setProgress(questionTime * 1000);
 
         // set question choices
-        // if the question is mcq
         if (questionType.equals("MCQ")) {
             displayChoices(view);
         } else if (questionType.equals("complete")) {
             displayCompleteFeilds(view);
         }
 
+        // load the end activity
+        final Intent endIntent = new Intent(getContext(), EndActivity.class);
+        endIntent.putExtra("NOT_SOLVED_QUESTIONS", true);
+
+        // set timer to the question
+        QuestionCountTimer myCountDownTimer;
+        myCountDownTimer = new QuestionCountTimer(questionTime * 1000, 100);
+        myCountDownTimer.start();
 
         return view;
     }
@@ -152,7 +163,8 @@ public class McqFragment extends Fragment {
             // adding action
             actionText.addTextChangedListener(new TextWatcher() {
                 Timer timer;
-                boolean wrongAnswer ;
+                boolean wrongAnswer;
+
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -168,7 +180,6 @@ public class McqFragment extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    // user typed: start the timer
                     timer = new Timer();
                     timer.schedule(new TimerTask() {
                         @Override
@@ -176,12 +187,12 @@ public class McqFragment extends Fragment {
                             if (actionText.getText().toString().equals(choice.getAnsTitle())) {
                                 generateNextQuestion(questionNumber);
                             } else {
-                                wrongAnswer=true;
+                                wrongAnswer = true;
                             }
                         }
-                    }, 600); // 600ms delay before the timer executes the „run“ method from TimerTask
-                    if (wrongAnswer){
-                        Toast.makeText(getContext(),"Sorry it's a wrong answer! please try again",Toast.LENGTH_SHORT).show();
+                    }, 1000); // 600ms delay before the timer executes the „run“ method from TimerTask
+                    if (wrongAnswer) {
+                        Toast.makeText(getContext(), "Sorry it's a wrong answer! please try again", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -234,7 +245,6 @@ public class McqFragment extends Fragment {
 
     }
 
-    //
     private void rightAnswerEffect(Button button) {
         button.setBackground(getResources().getDrawable(R.drawable.button_shape_right));
     }
@@ -247,16 +257,35 @@ public class McqFragment extends Fragment {
     private void generateNextQuestion(final int questionNumber) {
 
         choices_list.clear();
-
         int next_question = questionNumber + 1;
         Question nextQuestion = QuizMainActivity.getAllQuestions().get(next_question);
-        Fragment nextFragment = McqFragment.newInstance(nextQuestion, next_question);
-
-
-        getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
-
+        if (nextQuestion != null) {
+            Fragment nextFragment = QuestionFragment.newInstance(nextQuestion, next_question);
+            getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
+        } else {
+            Toast.makeText(getContext(), "This the last question", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
+    /*----------------Time Timer-------------------*/
+    private class QuestionCountTimer extends CountDownTimer {
 
+        QuestionCountTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            int progress = (int) (millisUntilFinished);
+            Log.d("timeOfTheProcess", " " + progress);
+            questionTimeBar.setProgress(progress);
+        }
+
+        @Override
+        public void onFinish() {
+            questionTimeBar.setProgress(0);
+        }
+
+    }
 }

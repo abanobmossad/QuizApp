@@ -48,6 +48,9 @@
     <string name="todo">TODO</string>
     <array name="question_type">
         <item>MCQ</item>
-        <item>Complete </item>
+        <item>Complete</item>
     </array>
+
+    <!-- end-->
+    <string name="sorry">Sorry please try again</string>
 </resources>
