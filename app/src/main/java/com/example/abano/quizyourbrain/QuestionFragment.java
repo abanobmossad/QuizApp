@@ -1,9 +1,10 @@
 package com.example.abano.quizyourbrain;
 
 
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +22,16 @@ import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -49,13 +61,14 @@ public class QuestionFragment extends Fragment {
     private Long questionId;
     private int questionIsActive;
     private int questionTime;
-    private String questionImage;
+    private Long imageId;
     private String questionCategory;
     private String questionTitle;
     private String questionType;
     private int questionNumber;
     private ArrayList<Choice> choices_list;
     private ProgressBar questionTimeBar;
+    private ImageView quesImage;
 
 
     public QuestionFragment() {
@@ -70,7 +83,8 @@ public class QuestionFragment extends Fragment {
         args.putString(QUESTION_TITLE, question.getQuestionTitle());
         args.putString(QUESTION_TYPE, question.getQuestionType());
         args.putString(QUESTION_CATEGORY, question.getCategory());
-        args.putString(QUESTION_IMAGE, question.getCategory());
+        if (question.getImage() != null)
+            args.putLong(QUESTION_IMAGE, question.getImage());
         args.putInt(QUESTION_IS_ACTIVE, question.getIsActive());
         args.putLong(QUESTION_ID, question.getId());
         args.putInt(QUESTION_NUMBER, questionNumber);
@@ -88,7 +102,7 @@ public class QuestionFragment extends Fragment {
             questionTitle = getArguments().getString(QUESTION_TITLE);
             questionCategory = getArguments().getString(QUESTION_CATEGORY);
             questionType = getArguments().getString(QUESTION_TYPE);
-            questionImage = getArguments().getString(QUESTION_IMAGE);
+            imageId = getArguments().getLong(QUESTION_IMAGE);
             questionIsActive = getArguments().getInt(QUESTION_IS_ACTIVE);
             questionId = getArguments().getLong(QUESTION_ID);
             questionNumber = getArguments().getInt(QUESTION_NUMBER);
@@ -106,18 +120,23 @@ public class QuestionFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.question_fragment, container, false);
         // main question title
-        TextView mQuestionEv = (TextView) view.findViewById(R.id.main_question);
+        TextView mQuestionEv = view.findViewById(R.id.main_question);
         mQuestionEv.setText(questionTitle);
         // add category
-        TextView categoryTv = (TextView) view.findViewById(R.id.category);
+        TextView categoryTv = view.findViewById(R.id.category);
         categoryTv.setText(questionCategory);
 
         // get question number
-        TextView numberTv = (TextView) view.findViewById(R.id.question_number);
+        TextView numberTv = view.findViewById(R.id.question_number);
         String num = "Question(" + (questionNumber + 1) + "/7" + ")";
         numberTv.setText(num);
+
+        // put question image
+        quesImage = view.findViewById(R.id.questionImage);
+        connectImages(imageId);
+
         // get question time
-        questionTimeBar = (ProgressBar) view.findViewById(R.id.question_time);
+        questionTimeBar = view.findViewById(R.id.question_time);
         questionTimeBar.setMax(questionTime * 1000);
         questionTimeBar.setProgress(questionTime * 1000);
 
@@ -125,12 +144,11 @@ public class QuestionFragment extends Fragment {
         if (questionType.equals("MCQ")) {
             displayChoices(view);
         } else if (questionType.equals("complete")) {
-            displayCompleteFeilds(view);
+            displayCompleteFields(view);
         }
 
         // load the end activity
-        final Intent endIntent = new Intent(getContext(), EndActivity.class);
-        endIntent.putExtra("NOT_SOLVED_QUESTIONS", true);
+
 
         // set timer to the question
         QuestionCountTimer myCountDownTimer;
@@ -140,7 +158,7 @@ public class QuestionFragment extends Fragment {
         return view;
     }
 
-    private void displayCompleteFeilds(View view) {
+    private void displayCompleteFields(View view) {
         LinearLayout answerContainer = (LinearLayout) view.findViewById(R.id.answersContainer);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -258,8 +276,8 @@ public class QuestionFragment extends Fragment {
 
         choices_list.clear();
         int next_question = questionNumber + 1;
-        Question nextQuestion = QuizMainActivity.getAllQuestions().get(next_question);
-        if (nextQuestion != null) {
+        if (QuizMainActivity.getAllQuestions().get(next_question) != null) {
+            Question nextQuestion = QuizMainActivity.getAllQuestions().get(next_question);
             Fragment nextFragment = QuestionFragment.newInstance(nextQuestion, next_question);
             getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
         } else {
@@ -267,6 +285,53 @@ public class QuestionFragment extends Fragment {
         }
 
     }
+    // reload image from firebase
+    private void displayImage(String imageName) {
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference("flamelink/media/" + imageName);
+        mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                Picasso.with(getContext())
+                        .load(uri)
+                        .resize(768, 432)
+                        .into(quesImage);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
+        // Load the image using Glide
+
+    }
+
+    private void connectImages(final Long imageId) {
+        final DatabaseReference mediaDatabase = FirebaseDatabase.getInstance().getReference("flamelink/media/files");
+        // Read from the database
+        mediaDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot mediaSnapshot : dataSnapshot.getChildren()) {
+                    Long id = (Long) mediaSnapshot.child("id").getValue();
+                    String image_name = (String) mediaSnapshot.child("file").getValue();
+                    if (imageId.equals(id)) {
+                        displayImage(image_name);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("firebaseQuestion", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
 
     /*----------------Time Timer-------------------*/
     private class QuestionCountTimer extends CountDownTimer {
@@ -288,4 +353,6 @@ public class QuestionFragment extends Fragment {
         }
 
     }
+
+
 }

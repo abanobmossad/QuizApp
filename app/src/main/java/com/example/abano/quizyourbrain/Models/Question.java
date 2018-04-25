@@ -1,18 +1,21 @@
 package com.example.abano.quizyourbrain.Models;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class Question {
     private Long id;
     private int isActive;
-    private String image;
+    private Long image;
     private String category;
     private String questionTitle;
     private String questionType;
     private int time;
     private Object __meta__;
     private ArrayList<Choice> choice;
-    public Question(Object __meta__, Long id, String questionTitle, String category, String questionType,int time, int isActive, String image,ArrayList<Choice> choice) {
+    public Question(Object __meta__, Long id, String questionTitle, String category, String questionType,int time, int isActive, Long image,ArrayList<Choice> choice) {
         this.id = id;
         this.isActive = isActive;
         this.category = category;
@@ -45,7 +48,7 @@ public class Question {
         return questionType;
     }
 
-    public String getImage() {
+    public Long getImage() {
         return image;
     }
 

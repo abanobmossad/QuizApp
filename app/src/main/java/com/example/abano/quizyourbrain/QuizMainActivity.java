@@ -3,11 +3,15 @@ package com.example.abano.quizyourbrain;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +22,15 @@ import android.widget.Toast;
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
 import com.example.abano.quizyourbrain.QuestionControl.AddQuestion;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +61,7 @@ public class QuizMainActivity extends AppCompatActivity {
                         manager.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
                     }
                 } else {
-                    Toast.makeText(QuizMainActivity.this, "Your are not connected to internet! "+allQuestions.size(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QuizMainActivity.this, "Your are not connected to internet! " + allQuestions.size(), Toast.LENGTH_SHORT).show();
                 }
             }
         }, 2000);
@@ -151,7 +159,7 @@ public class QuizMainActivity extends AppCompatActivity {
                 // get question data
                 String question_title = (String) questionSnapshot.child("questionTitle").getValue();
                 String question_category = (String) questionSnapshot.child("category").getValue();
-                String image = (String) questionSnapshot.child("image").getValue();
+                Long imageID = (Long) questionSnapshot.child("image").child("0").getValue();
                 String question_type = (String) questionSnapshot.child("questionType").getValue();
                 Object __meta__ = questionSnapshot.child("__meta__").getValue();
                 Long id = (Long) questionSnapshot.child("id").getValue();
@@ -178,7 +186,7 @@ public class QuizMainActivity extends AppCompatActivity {
                     questionChoices.add(choice3);
                 if (choiceTitle4 != null)
                     questionChoices.add(choice4);
-                Question question = new Question(__meta__, id, question_title, question_category, question_type, 10, isActive, image, questionChoices);
+                Question question = new Question(__meta__, id, question_title, question_category, question_type, 10, isActive, imageID, questionChoices);
                 if (isActive == 1) {
                     if (question_type.equals("MCQ")) {
                         Log.d("MCQ:: ", question_type);
@@ -188,14 +196,13 @@ public class QuizMainActivity extends AppCompatActivity {
                         comQuestion.add(question);
                     }
                 }
+                publishProgress(i);
                 i++;
             }
             Collections.shuffle(allQuestions);
             Collections.shuffle(comQuestion);
             allQuestions.addAll(comQuestion);
-            publishProgress(i);
         }
-
-
     }
+
 }
