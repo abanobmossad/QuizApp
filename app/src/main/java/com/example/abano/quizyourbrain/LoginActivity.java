@@ -1,12 +1,16 @@
 package com.example.abano.quizyourbrain;
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -45,7 +49,7 @@ import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,LoaderManager.LoaderCallbacks<Cursor>  {
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     private static final int REQUEST_READ_CONTACTS = 0;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -72,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         barProgress=findViewById(R.id.login_progress);
         signIn = (SignInButton) findViewById(R.id.google_sign_in_button);
 
-        populateAutoComplete();
+
 
         mAuth=FirebaseAuth.getInstance();
 
@@ -85,46 +89,55 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
+                if(isOnline()){
+                    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
+                }else {
 
-    }
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS},REQUEST_READ_CONTACTS);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    builder.setMessage(R.string.noconnection)
+                            .setTitle(R.string.checkconnection);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK button
                         }
                     });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                }
+                }
+
+
+        });
+
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if(isOnline()){
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+            mainActivity.putExtra("user_id",currentUser.getUid());
+            startActivity(mainActivity);
+        }else {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.noconnection)
+                    .setTitle(R.string.checkconnection);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK button
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        }
+
 
 
     }
@@ -150,27 +163,42 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mPasswordView=findViewById(R.id.login_password);
         String email=mEmailView.getText().toString();
         String password=mPasswordView.getText().toString();
-
-
         barProgress.setVisibility(View.VISIBLE);
         loginButton.setVisibility(View.INVISIBLE);
 
+        if(isOnline()){
+            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()){
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                        mainActivity.putExtra("user_id",currentUser.getUid());
+                        startActivity(mainActivity);
+                    }else {
 
-        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
-                    startActivity(mainActivity);
-
-                }else {
-
-                    Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
-                    barProgress.setVisibility(View.INVISIBLE);
-                    loginButton.setVisibility(View.VISIBLE);
+                        Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
+                        barProgress.setVisibility(View.INVISIBLE);
+                        loginButton.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
-        });
+            });
+        }else {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.noconnection)
+                    .setTitle(R.string.checkconnection);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK button
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            barProgress.setVisibility(View.INVISIBLE);
+            loginButton.setVisibility(View.VISIBLE);
+        }
+
 
     }
 
@@ -196,7 +224,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -205,11 +232,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
-                            startActivity(mainActivity);
-                            FirebaseUser user = mAuth.getCurrentUser();
 
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                            mainActivity.putExtra("user_id",currentUser.getUid());
+                            startActivity(mainActivity);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -221,48 +248,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 });
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -270,15 +256,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
+
 
 }
 

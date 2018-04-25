@@ -46,11 +46,12 @@
     <string name="activeMood">Is question active</string>
     <string name="saveBtn">Save</string>
     <string name="todo">TODO</string>
+    <string name="noconnection">No connection</string>
+    <string name="checkconnection">check your internet connection</string>
+    <string name="ok">Ok</string>
     <array name="question_type">
         <item>MCQ</item>
         <item>Complete</item>
     </array>
-
-    <!-- end-->
-    <string name="sorry">Sorry please try again</string>
+<string name="sorry">Sorry please try again</string>
 </resources>
