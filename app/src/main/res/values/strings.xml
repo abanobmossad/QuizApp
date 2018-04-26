@@ -54,4 +54,5 @@
         <item>Complete</item>
     </array>
 <string name="sorry">Sorry please try again</string>
+    <string name="reqired">Email and password are required</string>
 </resources>

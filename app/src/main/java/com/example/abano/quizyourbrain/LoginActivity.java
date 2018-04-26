@@ -46,6 +46,8 @@ import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -87,25 +89,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         signIn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                if(isOnline()){
-                    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                    startActivityForResult(signInIntent, RC_SIGN_IN);
-                }else {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                    builder.setMessage(R.string.noconnection)
-                            .setTitle(R.string.checkconnection);
-                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK button
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-
-                }
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
                 }
 
 
@@ -158,7 +146,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public void loginClicked(View view) {
-
         mEmailView=findViewById(R.id.login_name);
         mPasswordView=findViewById(R.id.login_password);
         String email=mEmailView.getText().toString();
@@ -166,28 +153,64 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         barProgress.setVisibility(View.VISIBLE);
         loginButton.setVisibility(View.INVISIBLE);
 
-        if(isOnline()){
-            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
-                        FirebaseUser currentUser = mAuth.getCurrentUser();
-                        Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
-                        mainActivity.putExtra("user_id",currentUser.getUid());
-                        startActivity(mainActivity);
-                    }else {
 
-                        Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
-                        barProgress.setVisibility(View.INVISIBLE);
-                        loginButton.setVisibility(View.VISIBLE);
-                    }
+        if(!email.matches("")&&!password.matches("")){
+            if(isEmailValid(email)){
+                if(isOnline()){
+                    mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+                                FirebaseUser currentUser = mAuth.getCurrentUser();
+                                Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                                mainActivity.putExtra("user_id",currentUser.getUid());
+                                startActivity(mainActivity);
+                            }else {
+
+                                Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
+                                barProgress.setVisibility(View.INVISIBLE);
+                                loginButton.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+                }else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(R.string.checkconnection)
+                            .setTitle(R.string.noconnection);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK button
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    barProgress.setVisibility(View.INVISIBLE);
+                    loginButton.setVisibility(View.VISIBLE);
                 }
-            });
+
+            }else {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.error_invalid_email)
+                        .setTitle(R.string.app_name);
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                barProgress.setVisibility(View.INVISIBLE);
+                loginButton.setVisibility(View.VISIBLE);
+            }
+
+
         }else {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.noconnection)
-                    .setTitle(R.string.checkconnection);
+            builder.setMessage(R.string.reqired)
+                    .setTitle(R.string.app_name);
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User clicked OK button
@@ -197,7 +220,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             dialog.show();
             barProgress.setVisibility(View.INVISIBLE);
             loginButton.setVisibility(View.VISIBLE);
+
         }
+
+
+
+
 
 
     }
@@ -224,28 +252,45 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+        if(isOnline()){
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
 
-                            FirebaseUser currentUser = mAuth.getCurrentUser();
-                            Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
-                            mainActivity.putExtra("user_id",currentUser.getUid());
-                            startActivity(mainActivity);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
+                                FirebaseUser currentUser = mAuth.getCurrentUser();
+                                Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                                mainActivity.putExtra("user_id",currentUser.getUid());
+                                startActivity(mainActivity);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                                Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
+                            }
+
+                            // ...
                         }
+                    });
 
-                        // ...
-                    }
-                });
+        }else {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            builder.setMessage(R.string.noconnection)
+                    .setTitle(R.string.checkconnection);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK button
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        }
+
+
     }
 
 
@@ -262,6 +307,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 
 
 }
