@@ -1,6 +1,7 @@
 package com.example.abano.quizyourbrain;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -45,22 +46,18 @@ import java.util.TimerTask;
  */
 
 public class QuestionFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String CHOICES_LIST = "CHOICES_LIST";
     private static final String QUESTION_NUMBER = "QUESTIONS_NUMBER";
     private static final String QUESTION_ID = "QUESTION_ID";
-    private static final String QUESTION_IS_ACTIVE = "IS_ACTIVE";
     private static final String QUESTION_IMAGE = "QUESTION_IMAGE";
     private static final String QUESTION_CATEGORY = "QUESTIONS_CATEGORY";
     private static final String QUESTION_TITLE = "QUESTIONS_TITLE";
+    private static final String QUESTION_l = "QUESTION_l";
     private static final String QUESTION_TYPE = "QUESTIONS_TYPE";
     private static final String QUESTION_TIME = "QUESTION_TIME";
-
-    // TODO: Rename and change types of parameters
     private Long questionId;
-    private int questionIsActive;
     private int questionTime;
+    private String questionL;
     private Long imageId;
     private String questionCategory;
     private String questionTitle;
@@ -70,22 +67,19 @@ public class QuestionFragment extends Fragment {
     private ProgressBar questionTimeBar;
     private ImageView quesImage;
 
-
     public QuestionFragment() {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static QuestionFragment newInstance(Question question, int questionNumber) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
         args.putString(QUESTION_TITLE, question.getQuestionTitle());
         args.putString(QUESTION_TYPE, question.getQuestionType());
         args.putString(QUESTION_CATEGORY, question.getCategory());
+        args.putString(QUESTION_l, question.getQuestionLevel());
         if (question.getImage() != null)
             args.putLong(QUESTION_IMAGE, question.getImage());
-        args.putInt(QUESTION_IS_ACTIVE, question.getIsActive());
         args.putLong(QUESTION_ID, question.getId());
         args.putInt(QUESTION_NUMBER, questionNumber);
         args.putInt(QUESTION_TIME, question.getTime());
@@ -102,8 +96,8 @@ public class QuestionFragment extends Fragment {
             questionTitle = getArguments().getString(QUESTION_TITLE);
             questionCategory = getArguments().getString(QUESTION_CATEGORY);
             questionType = getArguments().getString(QUESTION_TYPE);
+            questionL = getArguments().getString(QUESTION_l);
             imageId = getArguments().getLong(QUESTION_IMAGE);
-            questionIsActive = getArguments().getInt(QUESTION_IS_ACTIVE);
             questionId = getArguments().getLong(QUESTION_ID);
             questionNumber = getArguments().getInt(QUESTION_NUMBER);
             questionTime = getArguments().getInt(QUESTION_TIME);
@@ -112,11 +106,9 @@ public class QuestionFragment extends Fragment {
         }
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.question_fragment, container, false);
         // main question title
@@ -125,31 +117,23 @@ public class QuestionFragment extends Fragment {
         // add category
         TextView categoryTv = view.findViewById(R.id.category);
         categoryTv.setText(questionCategory);
-
         // get question number
         TextView numberTv = view.findViewById(R.id.question_number);
-        String num = "Question(" + (questionNumber + 1) + "/7" + ")";
+        String num = "Question(" + (questionL) + "/7" + ")";
         numberTv.setText(num);
-
         // put question image
         quesImage = view.findViewById(R.id.questionImage);
         connectImages(imageId);
-
         // get question time
         questionTimeBar = view.findViewById(R.id.question_time);
         questionTimeBar.setMax(questionTime * 1000);
         questionTimeBar.setProgress(questionTime * 1000);
-
         // set question choices
         if (questionType.equals("MCQ")) {
             displayChoices(view);
         } else if (questionType.equals("complete")) {
             displayCompleteFields(view);
         }
-
-        // load the end activity
-
-
         // set timer to the question
         QuestionCountTimer myCountDownTimer;
         myCountDownTimer = new QuestionCountTimer(questionTime * 1000, 100);
@@ -159,7 +143,7 @@ public class QuestionFragment extends Fragment {
     }
 
     private void displayCompleteFields(View view) {
-        LinearLayout answerContainer = (LinearLayout) view.findViewById(R.id.answersContainer);
+        LinearLayout answerContainer = view.findViewById(R.id.answersContainer);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 10, 0, 0);
@@ -177,7 +161,7 @@ public class QuestionFragment extends Fragment {
             chET.setTextColor(getResources().getColor(R.color.textFgColor));
             answerContainer.addView(chET);
             final EditText actionText = ((EditText) view.findViewById(i));
-
+            final int[] trueAnswers = {0};
             // adding action
             actionText.addTextChangedListener(new TextWatcher() {
                 Timer timer;
@@ -185,7 +169,6 @@ public class QuestionFragment extends Fragment {
 
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 }
 
                 @Override
@@ -203,7 +186,9 @@ public class QuestionFragment extends Fragment {
                         @Override
                         public void run() {
                             if (actionText.getText().toString().equals(choice.getAnsTitle())) {
+                                trueAnswers[0]++;
                                 generateNextQuestion(questionNumber);
+                                Log.d("trueAnsers", "" + trueAnswers[0]);
                             } else {
                                 wrongAnswer = true;
                             }
@@ -214,11 +199,8 @@ public class QuestionFragment extends Fragment {
                     }
                 }
             });
-
             i++;
         }
-
-
     }
 
     private void displayChoices(View view) {
@@ -249,6 +231,7 @@ public class QuestionFragment extends Fragment {
                 public void onClick(View view) {
                     if (choice.getIsRight() == 1) {
                         rightAnswerEffect(actionBtn);
+                        addVisitedQuestion();
                         generateNextQuestion(questionNumber);
                     } else {
                         wrongAnswerEffect(actionBtn);
@@ -257,10 +240,8 @@ public class QuestionFragment extends Fragment {
                     }
                 }
             });
-
             i++;
         }
-
     }
 
     private void rightAnswerEffect(Button button) {
@@ -273,18 +254,15 @@ public class QuestionFragment extends Fragment {
 
     // set the data and display
     private void generateNextQuestion(final int questionNumber) {
-
-        choices_list.clear();
-        int next_question = questionNumber + 1;
-        if (QuizMainActivity.getAllQuestions().get(next_question) != null) {
-            Question nextQuestion = QuizMainActivity.getAllQuestions().get(next_question);
-            Fragment nextFragment = QuestionFragment.newInstance(nextQuestion, next_question);
+        try {
+            int next_question = questionNumber + 1;
+            Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().get(next_question), next_question);
             getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
-        } else {
-            Toast.makeText(getContext(), "This the last question", Toast.LENGTH_SHORT).show();
+        } catch (IndexOutOfBoundsException e) {
+            Log.d("generateNextQuestion",e.getMessage());
         }
-
     }
+
     // reload image from firebase
     private void displayImage(String imageName) {
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference("flamelink/media/" + imageName);
@@ -332,6 +310,13 @@ public class QuestionFragment extends Fragment {
         });
     }
 
+    private void addVisitedQuestion() {
+        Intent intent = getActivity().getIntent();
+        String id = intent.getStringExtra("user_id");
+        DatabaseReference usersDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/visitedQuestions");
+        usersDatabase.child(questionId.toString()).setValue(questionId.toString());
+
+    }
 
     /*----------------Time Timer-------------------*/
     private class QuestionCountTimer extends CountDownTimer {

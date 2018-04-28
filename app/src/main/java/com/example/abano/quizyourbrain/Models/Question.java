@@ -1,8 +1,5 @@
 package com.example.abano.quizyourbrain.Models;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-
 import java.util.ArrayList;
 
 public class Question {
@@ -12,10 +9,12 @@ public class Question {
     private String category;
     private String questionTitle;
     private String questionType;
+    private String questionLevel;
     private int time;
     private Object __meta__;
     private ArrayList<Choice> choice;
-    public Question(Object __meta__, Long id, String questionTitle, String category, String questionType,int time, int isActive, Long image,ArrayList<Choice> choice) {
+
+    public Question(Object __meta__, Long id, String questionTitle, String category, String questionType,String questionLevel, int time, int isActive, Long image,ArrayList<Choice> choice) {
         this.id = id;
         this.isActive = isActive;
         this.category = category;
@@ -24,8 +23,13 @@ public class Question {
         this.questionType = questionType;
         this.questionTitle = questionTitle;
         this.choice=choice;
+        this.questionLevel = questionLevel;
         this.time = time;
 
+    }
+
+    public String getQuestionLevel() {
+        return questionLevel;
     }
 
     public int getTime() {
