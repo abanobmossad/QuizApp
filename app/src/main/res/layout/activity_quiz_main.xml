@@ -6,8 +6,7 @@
     android:id="@+id/fragmentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBackgroundColor"
-    >
+    android:background="@color/mainBackgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,18 +28,18 @@
             android:textColor="@color/textBgColor"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/addBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="100dp"
-            android:background="@drawable/buttonshape"
-            android:onClick="addQuestions"
-            android:padding="20dp"
-            android:text="@string/AddBtn"
-            android:textColor="@color/textBgColor"
-            android:textSize="20sp" />
+        <!--<Button-->
+        <!--android:id="@+id/addBtn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginTop="100dp"-->
+        <!--android:background="@drawable/buttonshape"-->
+        <!--android:onClick="addQuestions"-->
+        <!--android:padding="20dp"-->
+        <!--android:text="@string/AddBtn"-->
+        <!--android:textColor="@color/textBgColor"-->
+        <!--android:textSize="20sp" />-->
 
         <!--<android.support.v7.widget.Toolbar-->
         <!--android:id="@+id/toolbar_top"-->

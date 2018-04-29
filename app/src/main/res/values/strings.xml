@@ -32,13 +32,17 @@
     <string name="ans3">answer 3</string>
     <string name="ans4">answer 4</string>
 
-    <string name="score">Score</string>
-
     <!-- main activity -->
 
     <string name="stratBtn">Start Questions</string>
     <string name="AddBtn">Add Questions</string>
     <string name="title_activity_add_questions">AddQuestions</string>
+
+    <!--Ads-->
+    <string name="coinVideo">Watch video</string>
+    <string name="rate">Rate us</string>
+    <string name="coins">Coins 0</string>
+    <string name="score">Score 0</string>
 
     <!--Add question activity -->
     <string name="questionTitle">Add question title</string>

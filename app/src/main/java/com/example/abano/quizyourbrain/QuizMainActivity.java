@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.QuestionControl.AddQuestion;
+import com.google.android.gms.ads.MobileAds;
 
 public class QuizMainActivity extends AppCompatActivity {
 
@@ -23,7 +24,11 @@ public class QuizMainActivity extends AppCompatActivity {
         new LoadData(this, user_id).execute();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_main);
+
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+
     }
+
 
     public void startQuestions(View view) {
         try {
@@ -37,8 +42,8 @@ public class QuizMainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(QuizMainActivity.this, "Your are not connected to internet! ", Toast.LENGTH_SHORT).show();
             }
-        }catch (IndexOutOfBoundsException e){
-            Toast.makeText(QuizMainActivity.this, ""+LoadData.getQuestions().size(), Toast.LENGTH_SHORT).show();
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(QuizMainActivity.this, "" + LoadData.getQuestions().size(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -71,5 +76,6 @@ public class QuizMainActivity extends AppCompatActivity {
             }
         }, 3000);
     }
+
 
 }

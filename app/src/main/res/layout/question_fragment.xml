@@ -8,13 +8,56 @@
     android:padding="10dp"
     tools:context="com.example.abano.quizyourbrain.QuestionFragment">
 
+    <RelativeLayout
+        android:id="@+id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:text="@string/rate" />
+
+        <Button
+            android:id="@+id/coinVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@id/rate"
+            android:text="@string/coinVideo" />
+
+        <TextView
+            android:id="@+id/coins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toStartOf="@id/coinVideo"
+            android:text="@string/coins"
+            android:textColor="@color/textFgColor"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/score"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
+
     <ProgressBar
         android:id="@+id/question_time"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:progressTint="@color/buttonWrong"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"
+        android:progressTint="@color/buttonWrong" />
 
     <LinearLayout
         android:layout_width="match_parent"

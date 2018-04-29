@@ -71,12 +71,14 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
                     public void onDataChange(DataSnapshot VisitedSnap) {
                         generateAllQuestions(dataSnapshot, VisitedSnap);
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
                 });
             }
+
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value

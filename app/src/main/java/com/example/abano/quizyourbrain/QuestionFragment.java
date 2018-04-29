@@ -4,7 +4,6 @@ package com.example.abano.quizyourbrain;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -23,6 +22,11 @@ import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -55,6 +59,7 @@ public class QuestionFragment extends Fragment {
     private static final String QUESTION_l = "QUESTION_l";
     private static final String QUESTION_TYPE = "QUESTIONS_TYPE";
     private static final String QUESTION_TIME = "QUESTION_TIME";
+    private static final String REWARDED_AD = "REWARDED_AD";
     private Long questionId;
     private int questionTime;
     private String questionL;
@@ -66,6 +71,8 @@ public class QuestionFragment extends Fragment {
     private ArrayList<Choice> choices_list;
     private ProgressBar questionTimeBar;
     private ImageView quesImage;
+    private RewardedVideoAd mRewardedVideoAd;
+    private QuestionCountTimer myCountDownTimer;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -91,6 +98,11 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // initialize the ads video
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getContext());
+        loadRewardedVideoAd();
+        watchingVideoCoinsAds();
+        //---------------------------
         if (getArguments() != null) {
             // question arguments
             questionTitle = getArguments().getString(QUESTION_TITLE);
@@ -128,6 +140,18 @@ public class QuestionFragment extends Fragment {
         questionTimeBar = view.findViewById(R.id.question_time);
         questionTimeBar.setMax(questionTime * 1000);
         questionTimeBar.setProgress(questionTime * 1000);
+        /*-----------------------------------*/
+        //               Ads
+        Button watchVideoBtn = view.findViewById(R.id.coinVideo);
+        watchVideoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mRewardedVideoAd.isLoaded()) {
+                    mRewardedVideoAd.show();
+                }
+            }
+        });
+        /*------------------------------------*/
         // set question choices
         if (questionType.equals("MCQ")) {
             displayChoices(view);
@@ -135,10 +159,10 @@ public class QuestionFragment extends Fragment {
             displayCompleteFields(view);
         }
         // set timer to the question
-        QuestionCountTimer myCountDownTimer;
-        myCountDownTimer = new QuestionCountTimer(questionTime * 1000, 100);
-        myCountDownTimer.start();
 
+        myCountDownTimer = new QuestionCountTimer(questionTime * 1000, 100);
+
+        myCountDownTimer.create();
         return view;
     }
 
@@ -160,8 +184,7 @@ public class QuestionFragment extends Fragment {
             chET.setId(i);
             chET.setTextColor(getResources().getColor(R.color.textFgColor));
             answerContainer.addView(chET);
-            final EditText actionText = ((EditText) view.findViewById(i));
-            final int[] trueAnswers = {0};
+            final EditText actionText = (view.findViewById(i));
             // adding action
             actionText.addTextChangedListener(new TextWatcher() {
                 Timer timer;
@@ -186,9 +209,7 @@ public class QuestionFragment extends Fragment {
                         @Override
                         public void run() {
                             if (actionText.getText().toString().equals(choice.getAnsTitle())) {
-                                trueAnswers[0]++;
                                 generateNextQuestion(questionNumber);
-                                Log.d("trueAnsers", "" + trueAnswers[0]);
                             } else {
                                 wrongAnswer = true;
                             }
@@ -204,7 +225,7 @@ public class QuestionFragment extends Fragment {
     }
 
     private void displayChoices(View view) {
-        LinearLayout answerContainer = (LinearLayout) view.findViewById(R.id.answersContainer);
+        LinearLayout answerContainer = view.findViewById(R.id.answersContainer);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 10, 0, 0);
@@ -221,7 +242,7 @@ public class QuestionFragment extends Fragment {
             chBtn.setTextColor(getResources().getColor(R.color.textBgColor));
             answerContainer.addView(chBtn);
             // get the right button
-            final Button actionBtn = ((Button) view.findViewById(i));
+            final Button actionBtn = (view.findViewById(i));
             if (choice.getIsRight() == 1) {
                 rightAnswerBtn.add(actionBtn);
             }
@@ -231,7 +252,7 @@ public class QuestionFragment extends Fragment {
                 public void onClick(View view) {
                     if (choice.getIsRight() == 1) {
                         rightAnswerEffect(actionBtn);
-                        addVisitedQuestion();
+//                        addVisitedQuestion();
                         generateNextQuestion(questionNumber);
                     } else {
                         wrongAnswerEffect(actionBtn);
@@ -259,7 +280,7 @@ public class QuestionFragment extends Fragment {
             Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().get(next_question), next_question);
             getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
         } catch (IndexOutOfBoundsException e) {
-            Log.d("generateNextQuestion",e.getMessage());
+            Log.d("generateNextQuestion", e.getMessage());
         }
     }
 
@@ -269,11 +290,15 @@ public class QuestionFragment extends Fragment {
         mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                Picasso.with(getContext())
-                        .load(uri)
-                        .resize(768, 432)
-                        .into(quesImage);
+                try {
+                    Picasso.with(getActivity())
+                            .load(uri)
+                            .resize(768, 432)
+                            .into(quesImage);
+                } catch (IllegalArgumentException e) {
+                    Log.e("PicassoError", e.getMessage());
+                }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -281,9 +306,6 @@ public class QuestionFragment extends Fragment {
                 // Handle any errors
             }
         });
-
-        // Load the image using Glide
-
     }
 
     private void connectImages(final Long imageId) {
@@ -319,10 +341,10 @@ public class QuestionFragment extends Fragment {
     }
 
     /*----------------Time Timer-------------------*/
-    private class QuestionCountTimer extends CountDownTimer {
+    private class QuestionCountTimer extends QuestionTimer {
 
         QuestionCountTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
+            super(millisInFuture, countDownInterval, true);
         }
 
         @Override
@@ -334,9 +356,66 @@ public class QuestionFragment extends Fragment {
 
         @Override
         public void onFinish() {
+            Toast.makeText(getContext(), "finish", Toast.LENGTH_SHORT).show();
             questionTimeBar.setProgress(0);
         }
 
+    }
+
+    /*---------Ads loaded-----------*/
+
+    private void watchingVideoCoinsAds() {
+        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+            @Override
+            public void onRewarded(RewardItem reward) {
+                Toast.makeText(getContext(), "onRewarded! currency: " + reward.getType() + "  amount: " + reward.getAmount(), Toast.LENGTH_SHORT).show();
+                // Reward the user.
+            }
+
+            @Override
+            public void onRewardedVideoAdLeftApplication() {
+                Toast.makeText(getContext(), "onRewardedVideoAdLeftApplication", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoAdClosed() {
+                myCountDownTimer.resume();
+                Toast.makeText(getContext(), "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoAdFailedToLoad(int errorCode) {
+                Toast.makeText(getContext(), "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoAdLoaded() {
+                Toast.makeText(getContext(), "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoAdOpened() {
+                myCountDownTimer.pause();
+                Toast.makeText(getContext(), "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoStarted() {
+                Toast.makeText(getContext(), "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoCompleted() {
+                Toast.makeText(getContext(), "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadRewardedVideoAd() {
+        if (!mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                    new AdRequest.Builder().build());
+        }
     }
 
 
