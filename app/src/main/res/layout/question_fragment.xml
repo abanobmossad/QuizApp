@@ -35,8 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toStartOf="@id/coinVideo"
             android:text="@string/coins"
+            android:layout_toStartOf="@id/coinVideo"
             android:textColor="@color/textFgColor"
             android:textSize="15sp" />
 

@@ -1,11 +1,15 @@
 package com.example.abano.quizyourbrain;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -57,7 +61,7 @@ public class QuestionFragment extends Fragment {
     private static final String QUESTION_l = "QUESTION_l";
     private static final String QUESTION_TYPE = "QUESTIONS_TYPE";
     private static final String QUESTION_TIME = "QUESTION_TIME";
-    private static final String REWARDED_AD = "REWARDED_AD";
+    private static final String SCORE = "SCORE";
     private Long questionId;
     private int questionTime;
     private String questionL;
@@ -71,13 +75,16 @@ public class QuestionFragment extends Fragment {
     private ImageView quesImage;
     private RewardedVideoAd RewardedVideoAd;
     private QuestionCountTimer myCountDownTimer;
-    private boolean watchedQustionAd = false;
+    private boolean watchedQuestionAd = false;
+    private TextView coinsTv;
+    private TextView scoreTv;
+    private String score;
 
     public QuestionFragment() {
         // Required empty public constructor
     }
 
-    public static QuestionFragment newInstance(Question question, int questionNumber) {
+    public static QuestionFragment newInstance(Question question, int questionNumber, String score) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
         args.putString(QUESTION_TITLE, question.getQuestionTitle());
@@ -90,6 +97,7 @@ public class QuestionFragment extends Fragment {
         args.putInt(QUESTION_NUMBER, questionNumber);
         args.putInt(QUESTION_TIME, question.getTime());
         args.putParcelableArrayList(CHOICES_LIST, question.getChoices());
+        args.putString(SCORE, score);
         fragment.setArguments(args);
         return fragment;
     }
@@ -113,6 +121,7 @@ public class QuestionFragment extends Fragment {
             questionTime = getArguments().getInt(QUESTION_TIME);
             // choices arguments
             choices_list = getArguments().getParcelableArrayList(CHOICES_LIST);
+            score = getArguments().getString(SCORE);
         }
     }
 
@@ -138,13 +147,35 @@ public class QuestionFragment extends Fragment {
         questionTimeBar = view.findViewById(R.id.question_time);
         questionTimeBar.setMax(questionTime * 1000);
         questionTimeBar.setProgress(questionTime * 1000);
+        // load coins
+        coinsTv = view.findViewById(R.id.coins);
+        scoreTv = view.findViewById(R.id.score);
+        scoreTv.setText("Score " + score);
+        coinsTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Title")
+                        .setMessage("Do you really want to whatever?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                useCoins();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
+        loadUserCoins();
+
+
         /*-----------------------------------*/
         //               Ads
         Button watchVideoBtn = view.findViewById(R.id.coinVideo);
         watchVideoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (RewardedVideoAd.isLoaded() && !watchedQustionAd) {
+                if (RewardedVideoAd.isLoaded() && !watchedQuestionAd) {
                     RewardedVideoAd.show();
                 }
             }
@@ -274,9 +305,14 @@ public class QuestionFragment extends Fragment {
     // set the data and display
     private void generateNextQuestion(final int questionNumber) {
         try {
-            int next_question = questionNumber + 1;
-            Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().get(next_question), next_question);
-            getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
+            if (isOnline()) {
+                int next_question = questionNumber + 1;
+                String nScore = changeScore();
+                Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().get(next_question), next_question, nScore);
+                getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
+            } else {
+                QuizMainActivity.noInternetDialog(getContext());
+            }
         } catch (IndexOutOfBoundsException e) {
             Log.d("generateNextQuestion", e.getMessage());
         }
@@ -354,25 +390,31 @@ public class QuestionFragment extends Fragment {
 
         @Override
         public void onFinish() {
-            Toast.makeText(getContext(), "finish", Toast.LENGTH_SHORT).show();
             questionTimeBar.setProgress(0);
         }
 
     }
 
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(QuizMainActivity.CONNECTIVITY_SERVICE);
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
     /*---------Ads loaded-----------*/
 
     private void watchingVideoCoinsAds() {
         RewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
-            public void onRewarded(RewardItem reward) {
-                watchedQustionAd = true;
-                Toast.makeText(getContext(), "onRewarded! currency: " + reward.getType() + "  amount: " + reward.getAmount(), Toast.LENGTH_SHORT).show();
+            public void onRewarded(RewardItem coins) {
+                watchedQuestionAd = true;
                 // Reward the user.
+                addCoins(coins);
             }
 
             @Override
             public void onRewardedVideoAdLeftApplication() {
+                myCountDownTimer.resume();
                 Toast.makeText(getContext(), "onRewardedVideoAdLeftApplication", Toast.LENGTH_SHORT).show();
             }
 
@@ -380,38 +422,139 @@ public class QuestionFragment extends Fragment {
             public void onRewardedVideoAdClosed() {
                 myCountDownTimer.resume();
                 QuizMainActivity.loadRewardedVideoAd();
-                Toast.makeText(getContext(), "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdFailedToLoad(int errorCode) {
-                Toast.makeText(getContext(), "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdLoaded() {
-                Toast.makeText(getContext(), "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdOpened() {
                 myCountDownTimer.pause();
-                Toast.makeText(getContext(), "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoStarted() {
-                Toast.makeText(getContext(), "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoCompleted() {
-                Toast.makeText(getContext(), "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
             }
 
         });
 
     }
 
+
+    private void addCoins(final RewardItem coins) {
+        Intent intent = getActivity().getIntent();
+        final String id = intent.getStringExtra("user_id");
+        final DatabaseReference coinDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/Coins");
+        coinDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userCoins = (String) dataSnapshot.getValue();
+                if (userCoins == null)
+                    userCoins = "0";
+                String calcCoins = String.valueOf(Integer.parseInt(userCoins) + coins.getAmount());
+                coinDatabase.setValue(calcCoins);
+                coinsTv.setText("Coins " + calcCoins);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadUserCoins() {
+        Intent intent = getActivity().getIntent();
+        final String id = intent.getStringExtra("user_id");
+        final DatabaseReference coinDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/Coins");
+        coinDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userCoins = (String) dataSnapshot.getValue();
+                if (userCoins != null)
+                    coinsTv.setText("Coins " + userCoins);
+                else
+                    coinsTv.setText("Coins 0");
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void useCoins() {
+        Intent intent = getActivity().getIntent();
+        final String id = intent.getStringExtra("user_id");
+        final DatabaseReference coinDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/Coins");
+        coinDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userCoins = (String) dataSnapshot.getValue();
+                if (userCoins != null) {
+                    String useCoinsCalc = String.valueOf(Integer.parseInt(userCoins) - 10);
+                    if (Integer.parseInt(userCoins) >= 10) {
+                        generateNextQuestion(questionNumber);
+                        coinDatabase.setValue(useCoinsCalc);
+                        coinsTv.setText("Coins " + useCoinsCalc);
+                    }
+                } else {
+                    Toast.makeText(getContext(), "You don't have any coins yet", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private String changeScore() {
+        Intent intent = getActivity().getIntent();
+        final String id = intent.getStringExtra("user_id");
+        final DatabaseReference scoreDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/MaxScore");
+        int prevScore = Integer.parseInt(score);
+        final int calcScoreTv = prevScore + 1;
+
+        scoreDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String maxScore = (String) dataSnapshot.getValue();
+                if (maxScore != null) {
+                    Log.i("kskdkkskdkkdks", "" + maxScore + "  " + calcScoreTv);
+                    int currentMaxScore = Integer.parseInt(maxScore);
+                    if (currentMaxScore < calcScoreTv) {
+                        scoreDatabase.setValue(String.valueOf(calcScoreTv));
+                    }
+                } else {
+                    scoreDatabase.setValue("0");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return String.valueOf(calcScoreTv);
+    }
 
 }

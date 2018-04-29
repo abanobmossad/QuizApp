@@ -1,5 +1,7 @@
 package com.example.abano.quizyourbrain;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -8,10 +10,10 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.abano.quizyourbrain.QuestionControl.AddQuestion;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -32,6 +34,7 @@ public class QuizMainActivity extends AppCompatActivity {
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
         RewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         loadRewardedVideoAd();
+
     }
 
 
@@ -41,26 +44,30 @@ public class QuizMainActivity extends AppCompatActivity {
                 FragmentManager manager = getSupportFragmentManager();
                 Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
                 if (fragment == null) {
-                    fragment = QuestionFragment.newInstance(LoadData.getQuestions().get(0), 0);
+                    fragment = QuestionFragment.newInstance(LoadData.getQuestions().get(0), 0,"0");
                     manager.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
                 }
             } else {
-                Toast.makeText(QuizMainActivity.this, "Your are not connected to internet! ", Toast.LENGTH_SHORT).show();
+                noInternetDialog(this);
             }
         } catch (IndexOutOfBoundsException e) {
-            Toast.makeText(QuizMainActivity.this, "" + LoadData.getQuestions().size(), Toast.LENGTH_SHORT).show();
+            Log.d("IndexOutOfException",e.getMessage());
         }
     }
 
-    public void addQuestions(View view) {
-        Intent addQuestionsIntent = new Intent(this, AddQuestion.class);
-        startActivity(addQuestionsIntent);
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(CONNECTIVITY_SERVICE);
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    protected boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
+    public static void noInternetDialog(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(R.string.checkconnection)
+                .setTitle(R.string.noconnection);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -93,4 +100,25 @@ public class QuizMainActivity extends AppCompatActivity {
     public static RewardedVideoAd getRewardedVideoAd() {
         return RewardedVideoAd;
     }
+
+
+
+    // Ad preserve state
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        RewardedVideoAd.pause(this);
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        RewardedVideoAd.resume(this);
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        RewardedVideoAd.destroy(this);
+//    }
 }

@@ -1,5 +1,6 @@
 package com.example.abano.quizyourbrain;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -177,6 +178,7 @@ public abstract class QuestionTimer {
 
 
     // handles counting down
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
 
         @Override
