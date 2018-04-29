@@ -22,8 +22,6 @@ import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
@@ -71,8 +69,9 @@ public class QuestionFragment extends Fragment {
     private ArrayList<Choice> choices_list;
     private ProgressBar questionTimeBar;
     private ImageView quesImage;
-    private RewardedVideoAd mRewardedVideoAd;
+    private RewardedVideoAd RewardedVideoAd;
     private QuestionCountTimer myCountDownTimer;
+    private boolean watchedQustionAd = false;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -99,8 +98,7 @@ public class QuestionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // initialize the ads video
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getContext());
-        loadRewardedVideoAd();
+        RewardedVideoAd = QuizMainActivity.getRewardedVideoAd();
         watchingVideoCoinsAds();
         //---------------------------
         if (getArguments() != null) {
@@ -119,7 +117,7 @@ public class QuestionFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.question_fragment, container, false);
@@ -146,8 +144,8 @@ public class QuestionFragment extends Fragment {
         watchVideoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mRewardedVideoAd.isLoaded()) {
-                    mRewardedVideoAd.show();
+                if (RewardedVideoAd.isLoaded() && !watchedQustionAd) {
+                    RewardedVideoAd.show();
                 }
             }
         });
@@ -365,9 +363,10 @@ public class QuestionFragment extends Fragment {
     /*---------Ads loaded-----------*/
 
     private void watchingVideoCoinsAds() {
-        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+        RewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewarded(RewardItem reward) {
+                watchedQustionAd = true;
                 Toast.makeText(getContext(), "onRewarded! currency: " + reward.getType() + "  amount: " + reward.getAmount(), Toast.LENGTH_SHORT).show();
                 // Reward the user.
             }
@@ -380,6 +379,7 @@ public class QuestionFragment extends Fragment {
             @Override
             public void onRewardedVideoAdClosed() {
                 myCountDownTimer.resume();
+                QuizMainActivity.loadRewardedVideoAd();
                 Toast.makeText(getContext(), "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
             }
 
@@ -408,14 +408,9 @@ public class QuestionFragment extends Fragment {
             public void onRewardedVideoCompleted() {
                 Toast.makeText(getContext(), "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
 
-    private void loadRewardedVideoAd() {
-        if (!mRewardedVideoAd.isLoaded()) {
-            mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
-                    new AdRequest.Builder().build());
-        }
+        });
+
     }
 
 

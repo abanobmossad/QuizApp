@@ -12,9 +12,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.QuestionControl.AddQuestion;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
 
 public class QuizMainActivity extends AppCompatActivity {
+    private static RewardedVideoAd RewardedVideoAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +28,10 @@ public class QuizMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_main);
 
+        // initialize Video ads
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-
+        RewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        loadRewardedVideoAd();
     }
 
 
@@ -77,5 +82,15 @@ public class QuizMainActivity extends AppCompatActivity {
         }, 3000);
     }
 
+    // loading video ads
+    public static void loadRewardedVideoAd() {
+        if (!RewardedVideoAd.isLoaded()) {
+            RewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                    new AdRequest.Builder().build());
+        }
+    }
 
+    public static RewardedVideoAd getRewardedVideoAd() {
+        return RewardedVideoAd;
+    }
 }
