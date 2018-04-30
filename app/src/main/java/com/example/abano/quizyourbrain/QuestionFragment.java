@@ -58,13 +58,13 @@ public class QuestionFragment extends Fragment {
     private static final String QUESTION_IMAGE = "QUESTION_IMAGE";
     private static final String QUESTION_CATEGORY = "QUESTIONS_CATEGORY";
     private static final String QUESTION_TITLE = "QUESTIONS_TITLE";
-    private static final String QUESTION_l = "QUESTION_l";
+    private static final String QUESTION_LEVELE = "QUESTION_LEVELE";
     private static final String QUESTION_TYPE = "QUESTIONS_TYPE";
     private static final String QUESTION_TIME = "QUESTION_TIME";
     private static final String SCORE = "SCORE";
     private Long questionId;
     private int questionTime;
-    private String questionL;
+    private String questionLevel;
     private Long imageId;
     private String questionCategory;
     private String questionTitle;
@@ -90,7 +90,7 @@ public class QuestionFragment extends Fragment {
         args.putString(QUESTION_TITLE, question.getQuestionTitle());
         args.putString(QUESTION_TYPE, question.getQuestionType());
         args.putString(QUESTION_CATEGORY, question.getCategory());
-        args.putString(QUESTION_l, question.getQuestionLevel());
+        args.putString(QUESTION_LEVELE, question.getQuestionLevel());
         if (question.getImage() != null)
             args.putLong(QUESTION_IMAGE, question.getImage());
         args.putLong(QUESTION_ID, question.getId());
@@ -114,7 +114,7 @@ public class QuestionFragment extends Fragment {
             questionTitle = getArguments().getString(QUESTION_TITLE);
             questionCategory = getArguments().getString(QUESTION_CATEGORY);
             questionType = getArguments().getString(QUESTION_TYPE);
-            questionL = getArguments().getString(QUESTION_l);
+            questionLevel = getArguments().getString(QUESTION_LEVELE);
             imageId = getArguments().getLong(QUESTION_IMAGE);
             questionId = getArguments().getLong(QUESTION_ID);
             questionNumber = getArguments().getInt(QUESTION_NUMBER);
@@ -138,7 +138,7 @@ public class QuestionFragment extends Fragment {
         categoryTv.setText(questionCategory);
         // get question number
         TextView numberTv = view.findViewById(R.id.question_number);
-        String num = "Question(" + (questionL) + "/7" + ")";
+        String num = "Question(" + (questionLevel) + "/"+questionNumber+"/7" + ")";
         numberTv.setText(num);
         // put question image
         quesImage = view.findViewById(R.id.questionImage);
@@ -167,9 +167,6 @@ public class QuestionFragment extends Fragment {
             }
         });
         loadUserCoins();
-
-
-        /*-----------------------------------*/
         //               Ads
         Button watchVideoBtn = view.findViewById(R.id.coinVideo);
         watchVideoBtn.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +178,12 @@ public class QuestionFragment extends Fragment {
             }
         });
         /*------------------------------------*/
+        /*-----------------disable Helpers--------------------*/
+        if (questionLevel.equals("6") || questionLevel.equals("7")){
+            coinsTv.setVisibility(View.INVISIBLE);
+            watchVideoBtn.setVisibility(View.INVISIBLE);
+        }
+        /*-----------------------------------*/
         // set question choices
         if (questionType.equals("MCQ")) {
             displayChoices(view);
