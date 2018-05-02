@@ -12,28 +12,40 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 
 public class QuizMainActivity extends AppCompatActivity {
     private static RewardedVideoAd RewardedVideoAd;
+    private static InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         String user_id = intent.getStringExtra("user_id");
-        // do the retrieving  data in background from firebase
+        LoadData.getQuestions().clear();
         new LoadData(this, user_id).execute();
+        // get in full screen
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        // do the retrieving  data in background from firebase
+
         setContentView(R.layout.activity_quiz_main);
 
-        // initialize Video ads
+        // initialize ads
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
         RewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         loadRewardedVideoAd();
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
 
     }
 
@@ -44,14 +56,14 @@ public class QuizMainActivity extends AppCompatActivity {
                 FragmentManager manager = getSupportFragmentManager();
                 Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
                 if (fragment == null) {
-                    fragment = QuestionFragment.newInstance(LoadData.getQuestions().get(0), 0,"0");
+                    fragment = QuestionFragment.newInstance(LoadData.getQuestions().get(0), 0, "0");
                     manager.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
                 }
             } else {
                 noInternetDialog(this);
             }
         } catch (IndexOutOfBoundsException e) {
-            Log.d("IndexOutOfException",e.getMessage());
+            Log.d("IndexOutOfException", e.getMessage());
         }
     }
 
@@ -62,7 +74,7 @@ public class QuizMainActivity extends AppCompatActivity {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static void noInternetDialog(Context context){
+    public static void noInternetDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(R.string.checkconnection)
                 .setTitle(R.string.noconnection);
@@ -92,15 +104,23 @@ public class QuizMainActivity extends AppCompatActivity {
     // loading video ads
     public static void loadRewardedVideoAd() {
         if (!RewardedVideoAd.isLoaded()) {
-            RewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
-                    new AdRequest.Builder().build());
+            RewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
         }
+    }
+
+    public static void loadPopupAd() {
+        if (!mInterstitialAd.isLoaded()) {
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        }
+    }
+
+    public static InterstitialAd getInterstitialAd() {
+        return mInterstitialAd;
     }
 
     public static RewardedVideoAd getRewardedVideoAd() {
         return RewardedVideoAd;
     }
-
 
 
     // Ad preserve state

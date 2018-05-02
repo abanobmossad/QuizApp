@@ -1,9 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@drawable/main_background"
     android:orientation="vertical"
     android:padding="10dp"
     tools:context="com.example.abano.quizyourbrain.QuestionFragment">
@@ -13,32 +12,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/rate"
+        <ImageView
+            android:id="@+id/coinVideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="5dp"
-            android:text="@string/rate" />
+            android:background="@drawable/super_round"
+            android:padding="5dp"
+            android:src="@drawable/watch_ad_e"
+            android:text="@string/coinVideo"
+            android:tooltipText="@string/adsTip"
+            tools:ignore="ContentDescription"
+            tools:targetApi="o" />
 
-        <Button
-            android:id="@+id/coinVideo"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/coinsGroup"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@id/rate"
-            android:text="@string/coinVideo" />
-
-        <TextView
-            android:id="@+id/coins"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/coins"
             android:layout_toStartOf="@id/coinVideo"
-            android:textColor="@color/textFgColor"
-            android:textSize="15sp" />
+            android:tooltipText="@string/coinsTip"
+            tools:ignore="RelativeOverlap"
+            tools:targetApi="o">
+
+            <ImageView
+                android:id="@+id/coinIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/super_round"
+                android:padding="5dp"
+                android:src="@drawable/coins"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/coins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_toStartOf="@id/coinIcon"
+                android:background="@drawable/super_round"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="@string/coins"
+                android:textColor="@color/coinsColor"
+                android:textSize="15sp"
+                tools:ignore="RelativeOverlap" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/closeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/close_btn"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/score"
@@ -46,25 +75,34 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/closeBtn"
+            android:background="@drawable/super_round"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
             android:text="@string/score"
-            android:textSize="15sp" />
+            android:textColor="@color/colorAccent"
+            android:textSize="22sp"
+            tools:ignore="RelativeOverlap" />
 
     </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/question_time"
-        style="?android:attr/progressBarStyleHorizontal"
+        style="@style/CustomProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:progressTint="@color/buttonWrong" />
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/super_round"
+        android:maxHeight="30dip"
+        android:padding="7dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="1"
         android:background="@drawable/round_corner"
-        android:backgroundTint="@color/textBgColor"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -80,7 +118,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:text="@string/question_number"
-                android:textColor="@color/textFgColor"
+                android:textAllCaps="true"
+                android:textColor="@color/category"
                 android:textSize="16sp" />
 
             <TextView
@@ -89,8 +128,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:text="@string/category"
-                android:textColor="@color/textFgColor"
-                android:textSize="16sp" />
+                android:textAllCaps="true"
+                android:textColor="@color/category"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
 
         </RelativeLayout>
 
@@ -98,14 +139,19 @@
             android:id="@+id/main_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:text="@string/main_question"
+            android:textAlignment="textStart"
             android:textColor="@color/mainQuestionColor"
-            android:textSize="28sp" />
+            android:textSize="25sp" />
 
         <ImageView
             android:id="@+id/questionImage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
@@ -113,11 +159,19 @@
         android:id="@+id/answersContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
+        android:layout_weight="0.3"
+        android:isScrollContainer="true"
         android:orientation="vertical">
 
     </LinearLayout>
 
-
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
 </LinearLayout>
 

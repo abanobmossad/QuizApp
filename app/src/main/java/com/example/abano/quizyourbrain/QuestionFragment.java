@@ -21,11 +21,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
@@ -58,7 +62,7 @@ public class QuestionFragment extends Fragment {
     private static final String QUESTION_IMAGE = "QUESTION_IMAGE";
     private static final String QUESTION_CATEGORY = "QUESTIONS_CATEGORY";
     private static final String QUESTION_TITLE = "QUESTIONS_TITLE";
-    private static final String QUESTION_LEVELE = "QUESTION_LEVELE";
+    private static final String QUESTION_LEVEL = "QUESTION_LEVEL";
     private static final String QUESTION_TYPE = "QUESTIONS_TYPE";
     private static final String QUESTION_TIME = "QUESTION_TIME";
     private static final String SCORE = "SCORE";
@@ -74,6 +78,7 @@ public class QuestionFragment extends Fragment {
     private ProgressBar questionTimeBar;
     private ImageView quesImage;
     private RewardedVideoAd RewardedVideoAd;
+    private InterstitialAd mInterstitialAd;
     private QuestionCountTimer myCountDownTimer;
     private boolean watchedQuestionAd = false;
     private TextView coinsTv;
@@ -90,7 +95,7 @@ public class QuestionFragment extends Fragment {
         args.putString(QUESTION_TITLE, question.getQuestionTitle());
         args.putString(QUESTION_TYPE, question.getQuestionType());
         args.putString(QUESTION_CATEGORY, question.getCategory());
-        args.putString(QUESTION_LEVELE, question.getQuestionLevel());
+        args.putString(QUESTION_LEVEL, question.getQuestionLevel());
         if (question.getImage() != null)
             args.putLong(QUESTION_IMAGE, question.getImage());
         args.putLong(QUESTION_ID, question.getId());
@@ -108,13 +113,16 @@ public class QuestionFragment extends Fragment {
         // initialize the ads video
         RewardedVideoAd = QuizMainActivity.getRewardedVideoAd();
         watchingVideoCoinsAds();
+        //  Interstitial Ad
+        mInterstitialAd = QuizMainActivity.getInterstitialAd();
+        QuizMainActivity.loadPopupAd();
         //---------------------------
         if (getArguments() != null) {
             // question arguments
             questionTitle = getArguments().getString(QUESTION_TITLE);
             questionCategory = getArguments().getString(QUESTION_CATEGORY);
             questionType = getArguments().getString(QUESTION_TYPE);
-            questionLevel = getArguments().getString(QUESTION_LEVELE);
+            questionLevel = getArguments().getString(QUESTION_LEVEL);
             imageId = getArguments().getLong(QUESTION_IMAGE);
             questionId = getArguments().getLong(QUESTION_ID);
             questionNumber = getArguments().getInt(QUESTION_NUMBER);
@@ -138,7 +146,7 @@ public class QuestionFragment extends Fragment {
         categoryTv.setText(questionCategory);
         // get question number
         TextView numberTv = view.findViewById(R.id.question_number);
-        String num = "Question(" + (questionLevel) + "/"+questionNumber+"/7" + ")";
+        String num = "Question (" + (questionNumber + 1) + "/7" + ")";
         numberTv.setText(num);
         // put question image
         quesImage = view.findViewById(R.id.questionImage);
@@ -147,18 +155,24 @@ public class QuestionFragment extends Fragment {
         questionTimeBar = view.findViewById(R.id.question_time);
         questionTimeBar.setMax(questionTime * 1000);
         questionTimeBar.setProgress(questionTime * 1000);
+        // load banner ad
+        AdView AdView = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        AdView.loadAd(adRequest);
         // load coins
+        RelativeLayout coinsGroup = view.findViewById(R.id.coinsGroup);
         coinsTv = view.findViewById(R.id.coins);
         scoreTv = view.findViewById(R.id.score);
         scoreTv.setText("Score " + score);
-        coinsTv.setOnClickListener(new View.OnClickListener() {
+
+        coinsGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Title")
-                        .setMessage("Do you really want to whatever?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setTitle("Use Coins ")
+                        .setMessage(R.string.useCoins)
+                        .setIcon(R.drawable.coins)
+                        .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 useCoins();
                             }
@@ -168,7 +182,7 @@ public class QuestionFragment extends Fragment {
         });
         loadUserCoins();
         //               Ads
-        Button watchVideoBtn = view.findViewById(R.id.coinVideo);
+        ImageView watchVideoBtn = view.findViewById(R.id.coinVideo);
         watchVideoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,9 +191,30 @@ public class QuestionFragment extends Fragment {
                 }
             }
         });
+        //------------------close the app
+        ImageView closeBtn = view.findViewById(R.id.closeBtn);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Leaving !")
+                        .setMessage(R.string.leaveApp)
+                        .setIcon(R.drawable.close_btn)
+                        .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Intent intent = new Intent(getContext(), QuizMainActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
         /*------------------------------------*/
         /*-----------------disable Helpers--------------------*/
-        if (questionLevel.equals("6") || questionLevel.equals("7")){
+        ImageView coinIcon = view.findViewById(R.id.coinIcon);
+        if (questionLevel.equals("6") || questionLevel.equals("7")) {
+            coinIcon.setVisibility(View.INVISIBLE);
+            coinsGroup.setVisibility(View.INVISIBLE);
             coinsTv.setVisibility(View.INVISIBLE);
             watchVideoBtn.setVisibility(View.INVISIBLE);
         }
@@ -191,9 +226,7 @@ public class QuestionFragment extends Fragment {
             displayCompleteFields(view);
         }
         // set timer to the question
-
         myCountDownTimer = new QuestionCountTimer(questionTime * 1000, 100);
-
         myCountDownTimer.create();
         return view;
     }
@@ -211,7 +244,7 @@ public class QuestionFragment extends Fragment {
             // making the complete editText
             final EditText chET = new EditText(getContext());
             chET.setLayoutParams(params);
-            chET.setHint("Enter the answer number ");
+            chET.setHint(R.string.comAns);
             chET.setBackground(getResources().getDrawable(R.drawable.edit_text_style));
             chET.setId(i);
             chET.setTextColor(getResources().getColor(R.color.textFgColor));
@@ -312,7 +345,13 @@ public class QuestionFragment extends Fragment {
                 int next_question = questionNumber + 1;
                 String nScore = changeScore();
                 Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().get(next_question), next_question, nScore);
-                getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, nextFragment).commit();
+                // load Interstitial Ad
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("interstitial", "The interstitial wasn't loaded yet.");
+                }
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainer, nextFragment).commit();
             } else {
                 QuizMainActivity.noInternetDialog(getContext());
             }
@@ -330,7 +369,6 @@ public class QuestionFragment extends Fragment {
                 try {
                     Picasso.with(getActivity())
                             .load(uri)
-                            .resize(768, 432)
                             .into(quesImage);
                 } catch (IllegalArgumentException e) {
                     Log.e("PicassoError", e.getMessage());
@@ -471,7 +509,7 @@ public class QuestionFragment extends Fragment {
                     userCoins = "0";
                 String calcCoins = String.valueOf(Integer.parseInt(userCoins) + coins.getAmount());
                 coinDatabase.setValue(calcCoins);
-                coinsTv.setText("Coins " + calcCoins);
+                coinsTv.setText(calcCoins);
             }
 
             @Override
@@ -490,9 +528,9 @@ public class QuestionFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String userCoins = (String) dataSnapshot.getValue();
                 if (userCoins != null)
-                    coinsTv.setText("Coins " + userCoins);
+                    coinsTv.setText(userCoins);
                 else
-                    coinsTv.setText("Coins 0");
+                    coinsTv.setText("0");
 
             }
 
@@ -516,7 +554,7 @@ public class QuestionFragment extends Fragment {
                     if (Integer.parseInt(userCoins) >= 10) {
                         generateNextQuestion(questionNumber);
                         coinDatabase.setValue(useCoinsCalc);
-                        coinsTv.setText("Coins " + useCoinsCalc);
+                        coinsTv.setText(useCoinsCalc);
                     }
                 } else {
                     Toast.makeText(getContext(), "You don't have any coins yet", Toast.LENGTH_SHORT).show();
