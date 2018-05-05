@@ -73,5 +73,7 @@
     <!--tool tips-->
     <string name="adsTip">Watch Ad to earn more coins</string>
     <string name="coinsTip">User your coins to skip this question</string>
+<string name="facebook_app_id">441835156237486</string>
+<string name="fb_login_protocol_scheme">fb441835156237486</string>
 
 </resources>
