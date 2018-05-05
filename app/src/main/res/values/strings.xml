@@ -42,11 +42,17 @@
     <string name="coinVideo">Watch video</string>
     <string name="rate">Rate us</string>
     <string name="coins">0</string>
-    <string name="score">Score</string>
+    <string name="score">Your score is </string>
     <string name="comAns">Enter the right answer</string>
     <string name="leaveApp">Do you really want to leave this question!!</string>
     <string name="useCoins">Do you want use 10 coins?</string>
     <string name="Yes">Yes</string>
+    <string name="gameOver">Game Over</string>
+    <string name="play">Play</string>
+    <string name="congrt">Congratulation you win</string>
+    <string name="winningInfo">We send email to reserve your reward</string>
+    <string name="submitComplete">submit</string>
+    <string name="submitCompleteCheck">Please check your answers</string>
 
     <!--Add question activity -->
     <string name="questionTitle">Add question title</string>
@@ -61,10 +67,11 @@
         <item>MCQ</item>
         <item>Complete</item>
     </array>
-<string name="sorry">Sorry please try again</string>
+    <string name="sorry">Sorry please try again</string>
     <string name="reqired">Email and password are required</string>
 
     <!--tool tips-->
     <string name="adsTip">Watch Ad to earn more coins</string>
     <string name="coinsTip">User your coins to skip this question</string>
+
 </resources>

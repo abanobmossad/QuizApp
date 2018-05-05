@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
@@ -56,12 +55,6 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
         processDialog.setProgress(values[0]);
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        Toast.makeText(context, "Done retrieving the questions" + questions.size(), Toast.LENGTH_LONG).show();
     }
 
     private void McqFirebaseConnection() {

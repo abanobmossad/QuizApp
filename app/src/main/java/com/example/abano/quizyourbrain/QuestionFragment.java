@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.abano.quizyourbrain.End_UI.EndFragment;
 import com.example.abano.quizyourbrain.Models.Choice;
 import com.example.abano.quizyourbrain.Models.Question;
 import com.google.android.gms.ads.AdRequest;
@@ -84,11 +83,11 @@ public class QuestionFragment extends Fragment {
     private TextView coinsTv;
     private TextView scoreTv;
     private String score;
+    private boolean pressed = false;
 
     public QuestionFragment() {
         // Required empty public constructor
     }
-
     public static QuestionFragment newInstance(Question question, int questionNumber, String score) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
@@ -232,15 +231,13 @@ public class QuestionFragment extends Fragment {
     }
 
     private void displayCompleteFields(View view) {
-        LinearLayout answerContainer = view.findViewById(R.id.answersContainer);
+        final LinearLayout answerContainer = view.findViewById(R.id.answersContainer);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 10, 0, 0);
+        params.setMargins(0, 15, 0, 0);
 
         int i = 0;
-
         for (final Choice choice : choices_list) {
-
             // making the complete editText
             final EditText chET = new EditText(getContext());
             chET.setLayoutParams(params);
@@ -249,44 +246,37 @@ public class QuestionFragment extends Fragment {
             chET.setId(i);
             chET.setTextColor(getResources().getColor(R.color.textFgColor));
             answerContainer.addView(chET);
-            final EditText actionText = (view.findViewById(i));
-            // adding action
-            actionText.addTextChangedListener(new TextWatcher() {
-                Timer timer;
-                boolean wrongAnswer;
-
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    // user is typing: reset already started timer (if existing)
-                    if (timer != null) {
-                        timer.cancel();
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if (actionText.getText().toString().equals(choice.getAnsTitle())) {
-                                generateNextQuestion(questionNumber);
-                            } else {
-                                wrongAnswer = true;
-                            }
-                        }
-                    }, 1000); // 600ms delay before the timer executes the „run“ method from TimerTask
-                    if (wrongAnswer) {
-                        Toast.makeText(getContext(), "Sorry it's a wrong answer! please try again", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
             i++;
         }
+        final Button ansButton = new Button(getContext());
+        ansButton.setLayoutParams(params);
+        ansButton.setText(R.string.submitComplete);
+        ansButton.setBackground(getResources().getDrawable(R.drawable.buttonshape));
+        ansButton.setId(R.id.button);
+        ansButton.setTextColor(getResources().getColor(R.color.textBgColor));
+        answerContainer.addView(ansButton);
+        ansButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int i = 0;
+                int check = 0;
+                for (final Choice choice : choices_list) {
+                    EditText editText = (EditText) answerContainer.getChildAt(i);
+                    if (editText.getText().toString().equalsIgnoreCase(choice.getAnsTitle())) {
+                        check++;
+                    } else {
+                        Toast.makeText(getActivity(), R.string.submitCompleteCheck, Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    i++;
+                }
+                if (check == choices_list.size()) {
+                    generateNextQuestion(questionNumber);
+                }else
+                    Toast.makeText(getActivity(),R.string.submitCompleteCheck,Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void displayChoices(View view) {
@@ -318,11 +308,18 @@ public class QuestionFragment extends Fragment {
                     if (choice.getIsRight() == 1) {
                         rightAnswerEffect(actionBtn);
 //                        addVisitedQuestion();
-                        generateNextQuestion(questionNumber);
+                        if (!pressed)
+                            generateNextQuestion(questionNumber);
                     } else {
                         wrongAnswerEffect(actionBtn);
                         // show the right answer
                         rightAnswerEffect(rightAnswerBtn.get(0));
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                losing();
+                            }
+                        }, 2000);
                     }
                 }
             });
@@ -335,12 +332,27 @@ public class QuestionFragment extends Fragment {
     }
 
     private void wrongAnswerEffect(Button button) {
-        button.setBackground(getResources().getDrawable(R.drawable.button_shape_wrong));
+        if (!pressed)
+            button.setBackground(getResources().getDrawable(R.drawable.button_shape_wrong));
+        pressed = true;
+    }
+
+    private void losing() {
+        Fragment lose = EndFragment.newInstance(EndFragment.LOSE, score);
+        getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainer, lose).commit();
+
+    }
+
+    private void winning() {
+        Fragment lose = EndFragment.newInstance(EndFragment.SUCCESS, score);
+        getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainer, lose).commit();
+
     }
 
     // set the data and display
     private void generateNextQuestion(final int questionNumber) {
         try {
+            myCountDownTimer.cancel();
             if (isOnline()) {
                 int next_question = questionNumber + 1;
                 String nScore = changeScore();
@@ -357,6 +369,7 @@ public class QuestionFragment extends Fragment {
             }
         } catch (IndexOutOfBoundsException e) {
             Log.d("generateNextQuestion", e.getMessage());
+            winning();
         }
     }
 
@@ -427,11 +440,13 @@ public class QuestionFragment extends Fragment {
             int progress = (int) (millisUntilFinished);
             Log.d("timeOfTheProcess", " " + progress);
             questionTimeBar.setProgress(progress);
+
         }
 
         @Override
         public void onFinish() {
             questionTimeBar.setProgress(0);
+            losing();
         }
 
     }

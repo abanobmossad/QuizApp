@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".End_UI.EndFragment">
+
+    <ImageView
+        android:id="@+id/image1"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:alpha=".6"
+        android:src="@drawable/congrates1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/image2"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_alignTop="@id/image1"
+        android:layout_centerInParent="true"
+        android:src="@drawable/win_cup" />
+
+
+    <TextView
+        android:id="@+id/congText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/image1"
+        android:gravity="center"
+        android:text="@string/congrt"
+        android:textColor="@color/textBgColor"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/emText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/congText"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="@string/winningInfo"
+        android:textColor="@color/textBgColor"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/playBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emText"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/yellow_butn"
+        android:paddingEnd="70dp"
+        android:paddingStart="70dp"
+        android:text="@string/play"
+        android:textColor="@color/textBgColor"
+        android:textSize="22sp" />
+
+    <ImageButton
+        android:id="@+id/share_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/playBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/share_btn_style"
+        android:src="@drawable/share_btn"
+        tools:ignore="ContentDescription" />
+</RelativeLayout>

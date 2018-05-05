@@ -6,6 +6,7 @@
     <color name="progressBar">#01BAE7</color>
     <color name="MainBackground">#3C3F48</color>
     <color name="buttonWrong">#f44c95</color>
+    <color name="gameOver">#fd3e41</color>
     <color name="mainBackgroundColor">#fff</color>
     <color name="whiteBG">#fff</color>
     <color name="action_bar_bkgnd">#56e25b</color>
@@ -15,5 +16,6 @@
     <color name="coinsColor">#9e9707</color>
     <color name="category">#f98c8c8c</color>
     <color name="buttonDefault">#0C9EE5</color>
+    <color name="yellow">#FEC40C</color>
     <color name="buttonRight">#01CE6A</color>
 </resources>

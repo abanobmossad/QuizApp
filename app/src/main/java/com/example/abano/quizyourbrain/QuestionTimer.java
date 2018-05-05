@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.util.Log;
 
 /**
  * Schedule a countdown until a time in the future, with
@@ -189,7 +190,12 @@ public abstract class QuestionTimer {
 
                 if (millisLeft <= 0) {
                     cancel();
-                    onFinish();
+                    try {
+                        onFinish();
+                    } catch (Exception e) {
+                        Log.d("timer", e.getMessage());
+                    }
+
                 } else if (millisLeft < mCountdownInterval) {
                     // no tick, just delay until done
                     sendMessageDelayed(obtainMessage(MSG), millisLeft);
