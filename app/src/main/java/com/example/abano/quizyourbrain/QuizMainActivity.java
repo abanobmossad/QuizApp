@@ -16,7 +16,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.example.abano.quizyourbrain.End_UI.SoundService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -38,8 +37,6 @@ public class QuizMainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        //start service and play music
-        startService(new Intent(QuizMainActivity.this, SoundService.class));
         setContentView(R.layout.activity_quiz_main);
 
         // initialize ads
@@ -126,26 +123,26 @@ public class QuizMainActivity extends AppCompatActivity {
 
 
 //     Ad preserve state
-    @Override
-    protected void onPause() {
-        super.onPause();
-        RewardedVideoAd.pause(this);
-        //stop service and stop music
-        stopService(new Intent(QuizMainActivity.this, SoundService.class));
-    }
-//
-    @Override
-    protected void onResume() {
-        super.onResume();
-        RewardedVideoAd.resume(this);
-        startService(new Intent(QuizMainActivity.this, SoundService.class));
-    }
-//
-    @Override
-    protected void onDestroy() {
-        RewardedVideoAd.destroy(this);
-        //stop service and stop music
-        stopService(new Intent(QuizMainActivity.this, SoundService.class));
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        RewardedVideoAd.pause(this);
+//        //stop service and stop music
+//        stopService(new Intent(QuizMainActivity.this, SoundService.class));
+//    }
+////
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        RewardedVideoAd.resume(this);
+//        startService(new Intent(QuizMainActivity.this, SoundService.class));
+//    }
+////
+////    @Override
+////    protected void onDestroy() {
+////        RewardedVideoAd.destroy(this);
+////        //stop service and stop music
+////        stopService(new Intent(QuizMainActivity.this, SoundService.class));
+////        super.onDestroy();
+////    }
 }

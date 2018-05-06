@@ -34,7 +34,7 @@
 
     <!-- main activity -->
 
-    <string name="stratBtn">Start Questions</string>
+    <string name="stratBtn">Start quiz</string>
     <string name="AddBtn">Add Questions</string>
     <string name="title_activity_add_questions">AddQuestions</string>
 

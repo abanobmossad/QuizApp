@@ -6,12 +6,13 @@
     android:id="@+id/fragmentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBackgroundColor">
+    android:background="@drawable/main_background">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@drawable/main_back"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.abano.quizyourbrain.QuizMainActivity">
 
@@ -19,9 +20,12 @@
             android:id="@+id/startBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_marginTop="100dp"
-            android:background="@drawable/buttonshape"
+            android:background="@drawable/yellow_butn"
+            android:paddingEnd="60dp"
+            android:paddingStart="60dp"
             android:onClick="startQuestions"
             android:padding="20dp"
             android:text="@string/stratBtn"
@@ -67,5 +71,5 @@
         <!--android:orientation="vertical">-->
 
         <!--</LinearLayout>-->
-    </LinearLayout>
+    </RelativeLayout>
 </FrameLayout>

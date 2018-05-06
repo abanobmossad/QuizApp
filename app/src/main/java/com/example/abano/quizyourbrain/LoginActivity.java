@@ -1,25 +1,14 @@
 package com.example.abano.quizyourbrain;
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +28,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,14 +37,9 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import android.provider.ContactsContract;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     private static final int REQUEST_READ_CONTACTS = 0;
@@ -145,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             FirebaseUser currentUser = mAuth.getCurrentUser();
             if(currentUser!=null){
                 Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 mainActivity.putExtra("user_id",currentUser.getUid());
                 startActivity(mainActivity);
             }
@@ -203,6 +187,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 FirebaseUser currentUser = mAuth.getCurrentUser();
                                 if(currentUser!=null){
                                     Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                                    mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     mainActivity.putExtra("user_id",currentUser.getUid());
                                     startActivity(mainActivity);
                                 }
@@ -308,6 +293,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 FirebaseUser currentUser = mAuth.getCurrentUser();
                                 if(currentUser!=null){
                                     Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                                    mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     mainActivity.putExtra("user_id",currentUser.getUid());
                                     startActivity(mainActivity);
                                 }
@@ -373,6 +359,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             FirebaseUser currentUser = mAuth.getCurrentUser();
                             if(currentUser!=null){
                                 Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+                                mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 mainActivity.putExtra("user_id",currentUser.getUid());
                                 startActivity(mainActivity);
                             }

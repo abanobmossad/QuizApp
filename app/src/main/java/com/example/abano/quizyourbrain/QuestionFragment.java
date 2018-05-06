@@ -88,6 +88,7 @@ public class QuestionFragment extends Fragment {
     public QuestionFragment() {
         // Required empty public constructor
     }
+
     public static QuestionFragment newInstance(Question question, int questionNumber, String score) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
@@ -198,7 +199,7 @@ public class QuestionFragment extends Fragment {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Leaving !")
                         .setMessage(R.string.leaveApp)
-                        .setIcon(R.drawable.close_btn)
+                        .setIcon(R.drawable.close)
                         .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Intent intent = new Intent(getContext(), QuizMainActivity.class);
@@ -272,8 +273,8 @@ public class QuestionFragment extends Fragment {
                 }
                 if (check == choices_list.size()) {
                     generateNextQuestion(questionNumber);
-                }else
-                    Toast.makeText(getActivity(),R.string.submitCompleteCheck,Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getActivity(), R.string.submitCompleteCheck, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -570,6 +571,10 @@ public class QuestionFragment extends Fragment {
                         generateNextQuestion(questionNumber);
                         coinDatabase.setValue(useCoinsCalc);
                         coinsTv.setText(useCoinsCalc);
+                    } else {
+                        if (RewardedVideoAd.isLoaded()) {
+                            RewardedVideoAd.show();
+                        }
                     }
                 } else {
                     Toast.makeText(getContext(), "You don't have any coins yet", Toast.LENGTH_SHORT).show();

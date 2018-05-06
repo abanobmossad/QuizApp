@@ -24,7 +24,7 @@
         <clip>
             <shape>
                 <corners
-                    android:radius="5dip" />
+                    android:radius="3dip" />
                 <gradient
                     android:startColor="@color/progressBar"
                     android:endColor="@color/progressBar"

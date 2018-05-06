@@ -37,7 +37,6 @@ public class EndFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().stopService(new Intent(getContext(), SoundService.class));
         if (getArguments() != null) {
             endMood = getArguments().getString(END_MOOD);
             score = getArguments().getString(SCORE);
