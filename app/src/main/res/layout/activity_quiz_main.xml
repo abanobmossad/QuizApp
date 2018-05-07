@@ -6,15 +6,15 @@
     android:id="@+id/fragmentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_background">
+    android:background="@drawable/main_back">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/main_back"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.abano.quizyourbrain.QuizMainActivity">
+
 
         <Button
             android:id="@+id/startBtn"
@@ -23,53 +23,18 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="100dp"
-            android:background="@drawable/yellow_butn"
-            android:paddingEnd="60dp"
-            android:paddingStart="60dp"
+            android:background="@drawable/yellow_btn_style"
+            android:fontFamily="@string/fonts"
             android:onClick="startQuestions"
             android:padding="20dp"
+            android:paddingEnd="60dp"
+            android:paddingStart="60dp"
             android:text="@string/stratBtn"
             android:textColor="@color/textBgColor"
-            android:textSize="20sp" />
-
-        <!--<Button-->
-        <!--android:id="@+id/addBtn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginTop="100dp"-->
-        <!--android:background="@drawable/buttonshape"-->
-        <!--android:onClick="addQuestions"-->
-        <!--android:padding="20dp"-->
-        <!--android:text="@string/AddBtn"-->
-        <!--android:textColor="@color/textBgColor"-->
-        <!--android:textSize="20sp" />-->
-
-        <!--<android.support.v7.widget.Toolbar-->
-        <!--android:id="@+id/toolbar_top"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignTop="@id/container"-->
-        <!--android:background="@color/action_bar_bkgnd"-->
-        <!--android:minHeight="?attr/actionBarSize">-->
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
 
-        <!--<TextView-->
-        <!--android:id="@+id/toolbar_title"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:text="Toolbar Title" />-->
 
-
-        <!--</android.support.v7.widget.Toolbar>-->
-
-        <!--<LinearLayout-->
-        <!--android:id="@+id/main_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical">-->
-
-        <!--</LinearLayout>-->
     </RelativeLayout>
 </FrameLayout>

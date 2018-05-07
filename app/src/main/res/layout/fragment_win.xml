@@ -64,22 +64,21 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:background="@drawable/yellow_butn"
+        android:background="@drawable/yellow_btn_style"
         android:paddingEnd="70dp"
         android:paddingStart="70dp"
         android:text="@string/play"
         android:textColor="@color/textBgColor"
         android:textSize="22sp" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/share_btn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_below="@+id/playBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp"
+        android:layout_below="@+id/playBtn"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/share_btn_style"
-        android:src="@drawable/share_btn"
-        tools:ignore="ContentDescription" />
+        android:src="@drawable/share_btn"/>
 </RelativeLayout>

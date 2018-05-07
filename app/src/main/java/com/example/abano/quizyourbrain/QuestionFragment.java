@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -186,8 +188,12 @@ public class QuestionFragment extends Fragment {
         watchVideoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (RewardedVideoAd.isLoaded() && !watchedQuestionAd) {
-                    RewardedVideoAd.show();
+                if (isOnline()) {
+                    if (RewardedVideoAd.isLoaded() && !watchedQuestionAd) {
+                        RewardedVideoAd.show();
+                    }
+                } else {
+                    QuizMainActivity.noInternetDialog(getContext());
                 }
             }
         });
@@ -228,6 +234,8 @@ public class QuestionFragment extends Fragment {
         // set timer to the question
         myCountDownTimer = new QuestionCountTimer(questionTime * 1000, 100);
         myCountDownTimer.create();
+
+        addVisitedQuestion();
         return view;
     }
 
@@ -242,11 +250,15 @@ public class QuestionFragment extends Fragment {
             // making the complete editText
             final EditText chET = new EditText(getContext());
             chET.setLayoutParams(params);
+            chET.setSingleLine();
             chET.setHint(R.string.comAns);
             chET.setBackground(getResources().getDrawable(R.drawable.edit_text_style));
             chET.setId(i);
+            if (i == 0)
+                chET.requestFocus();
             chET.setTextColor(getResources().getColor(R.color.textFgColor));
             answerContainer.addView(chET);
+            chET.setImeOptions(IME_ACTION_NEXT);
             i++;
         }
         final Button ansButton = new Button(getContext());
@@ -293,7 +305,7 @@ public class QuestionFragment extends Fragment {
             final Button chBtn = new Button(getContext());
             chBtn.setLayoutParams(params);
             chBtn.setText(choice.getAnsTitle());
-            chBtn.setBackground(getResources().getDrawable(R.drawable.buttonshape));
+            chBtn.setBackground(getResources().getDrawable(R.drawable.button_default_style));
             chBtn.setId(i);
             chBtn.setTextColor(getResources().getColor(R.color.textBgColor));
             answerContainer.addView(chBtn);
@@ -340,6 +352,7 @@ public class QuestionFragment extends Fragment {
 
     private void losing() {
         Fragment lose = EndFragment.newInstance(EndFragment.LOSE, score);
+        assert getFragmentManager() != null;
         getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainer, lose).commit();
 
     }
@@ -357,13 +370,16 @@ public class QuestionFragment extends Fragment {
             if (isOnline()) {
                 int next_question = questionNumber + 1;
                 String nScore = changeScore();
-                Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().get(next_question), next_question, nScore);
+                Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().remove(0), next_question, nScore);
                 // load Interstitial Ad
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 } else {
                     Log.d("interstitial", "The interstitial wasn't loaded yet.");
                 }
+
+
+                assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainer, nextFragment).commit();
             } else {
                 QuizMainActivity.noInternetDialog(getContext());
@@ -536,6 +552,7 @@ public class QuestionFragment extends Fragment {
     }
 
     private void loadUserCoins() {
+
         Intent intent = getActivity().getIntent();
         final String id = intent.getStringExtra("user_id");
         final DatabaseReference coinDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/Coins");
@@ -558,34 +575,38 @@ public class QuestionFragment extends Fragment {
     }
 
     private void useCoins() {
-        Intent intent = getActivity().getIntent();
-        final String id = intent.getStringExtra("user_id");
-        final DatabaseReference coinDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/Coins");
-        coinDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String userCoins = (String) dataSnapshot.getValue();
-                if (userCoins != null) {
-                    String useCoinsCalc = String.valueOf(Integer.parseInt(userCoins) - 10);
-                    if (Integer.parseInt(userCoins) >= 10) {
-                        generateNextQuestion(questionNumber);
-                        coinDatabase.setValue(useCoinsCalc);
-                        coinsTv.setText(useCoinsCalc);
-                    } else {
-                        if (RewardedVideoAd.isLoaded()) {
-                            RewardedVideoAd.show();
+        if (isOnline()) {
+            Intent intent = getActivity().getIntent();
+            final String id = intent.getStringExtra("user_id");
+            final DatabaseReference coinDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/Coins");
+            coinDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String userCoins = (String) dataSnapshot.getValue();
+                    if (userCoins != null) {
+                        String useCoinsCalc = String.valueOf(Integer.parseInt(userCoins) - 10);
+                        if (Integer.parseInt(userCoins) >= 10) {
+                            generateNextQuestion(questionNumber);
+                            coinDatabase.setValue(useCoinsCalc);
+                            coinsTv.setText(useCoinsCalc);
+                        } else {
+                            if (RewardedVideoAd.isLoaded()) {
+                                RewardedVideoAd.show();
+                            }
                         }
+                    } else {
+                        Toast.makeText(getContext(), "You don't have any coins yet", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(getContext(), "You don't have any coins yet", Toast.LENGTH_SHORT).show();
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        } else {
+            QuizMainActivity.noInternetDialog(getContext());
+        }
     }
 
     private String changeScore() {

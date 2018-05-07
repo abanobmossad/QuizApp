@@ -6,22 +6,66 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp"
     tools:context=".End_UI.EndFragment">
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/highScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@+id/scoreIcon"
+                android:layout_width="60dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/high_score"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/scoreIcon"
+                android:fontFamily="@string/fonts"
+                android:text="@string/maxScore"
+                android:textAllCaps="true"
+                android:textColor="@color/textBgColor"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                tools:ignore="RelativeOverlap" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/maxScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/highScore"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@string/fonts"
+            android:text="0"
+            android:textColor="@color/textBgColor"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <ImageView
             android:id="@+id/cupIcon"
-            android:layout_width="230dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
             android:src="@drawable/lose_cup"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,8 +77,6 @@
             android:id="@+id/gameInfoBanner"
             android:layout_width="wrap_content"
             android:layout_height="41dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:background="@color/gameOver"
             android:gravity="center"
             android:paddingEnd="25dp"
@@ -48,29 +90,58 @@
             app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/scoreE"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:text="@string/score"
-        android:textColor="@color/textBgColor"
-        android:textSize="27sp"
-        android:textStyle="bold" />
+        android:layout_marginTop="20dp"
+        android:background="@drawable/icon_background"
+        tools:ignore="RelativeOverlap">
+
+        <ImageView
+            android:id="@+id/lifeIcon"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/life"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/scoreE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/lifeIcon"
+            android:text="@string/score"
+            android:textColor="@color/textBgColor"
+            android:textSize="22sp"
+            tools:ignore="RelativeOverlap" />
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/yellow_butn"
-        android:padding="13dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/yellow_btn_style"
+        android:padding="9dp"
         android:paddingEnd="70dp"
         android:paddingStart="70dp"
         android:text="@string/play"
         android:textColor="@color/textBgColor"
         android:textSize="22sp" />
+    <ImageView
+        android:id="@+id/share_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/share_btn_style"
+        android:src="@drawable/share_btn"/>
 
 </LinearLayout>

@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#13B6E2</color>
+    <color name="backgroundG1">#56CCF2</color>
+    <color name="backgroundG2">#2F80ED</color>
     <color name="progressBar">#01BAE7</color>
-    <color name="MainBackground">#3C3F48</color>
     <color name="buttonWrong">#f44c95</color>
     <color name="gameOver">#fd3e41</color>
     <color name="mainBackgroundColor">#fff</color>
     <color name="whiteBG">#fff</color>
-    <color name="action_bar_bkgnd">#56e25b</color>
     <color name="textBgColor">#fff</color>
     <color name="textFgColor">#030303</color>
-    <color name="mainQuestionColor">#030303</color>
-    <color name="coinsColor">#9e9707</color>
+    <color name="mainQuestionColor">#434343</color>
     <color name="category">#f98c8c8c</color>
     <color name="buttonDefault">#0C9EE5</color>
     <color name="yellow">#FEC40C</color>

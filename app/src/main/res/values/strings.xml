@@ -1,46 +1,32 @@
 <resources>
     <string name="app_name">Quiz your brain</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_login">Sign in</string>
-
     <!-- Strings related to login -->
     <string name="email">E-mail</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="action_register_short">Register</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="title_activity_quiz_main">QuizUP</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="main_question">Which Quiz App rewards knowledge with real prizes?</string>
     <string name="category">History &amp; Art</string>
     <string name="question_number">Question 5/7</string>
-    <string name="skip">Skip</string>
-    <string name="ans1">answer 1</string>
-    <string name="ans2">answer 2</string>
-    <string name="ans3">answer 3</string>
-    <string name="ans4">answer 4</string>
 
     <!-- main activity -->
 
     <string name="stratBtn">Start quiz</string>
-    <string name="AddBtn">Add Questions</string>
-    <string name="title_activity_add_questions">AddQuestions</string>
-
+    <string name="maxScore">High Score</string>
+    <string name="fonts">casual</string>
+    <string name="rateTitle">Rate Us</string>
+    <string name="rateit">Rate us</string>
+    <string name="rateno">no thanks</string>
+    <string name="ratelater">Later</string>
+    <string name="rateText">If you have been enjoying our app, we\'d really appreciate it if you could leave a nice review on the market </string>
+    <!--share -->
+    <string name="shareBody">I have fun playing Quiz game and getting good scores 😃😎😱 my score is </string>
     <!--Ads-->
     <string name="coinVideo">Watch video</string>
-    <string name="rate">Rate us</string>
     <string name="coins">0</string>
     <string name="score">Your score is </string>
     <string name="comAns">Enter the right answer</string>
@@ -67,7 +53,6 @@
         <item>MCQ</item>
         <item>Complete</item>
     </array>
-    <string name="sorry">Sorry please try again</string>
     <string name="reqired">Email and password are required</string>
 
     <!--tool tips-->

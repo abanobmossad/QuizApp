@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.abano.quizyourbrain.End_UI.AppRate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -32,12 +33,14 @@ public class QuizMainActivity extends AppCompatActivity {
         LoadData.getQuestions().clear();
         // do the retrieving  data in background from firebase
         new LoadData(this, user_id).execute();
+        AppRate.app_launched(this);
         // get in full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_main);
+        // load max score
 
         // initialize ads
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
@@ -55,7 +58,7 @@ public class QuizMainActivity extends AppCompatActivity {
                 FragmentManager manager = getSupportFragmentManager();
                 Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
                 if (fragment == null) {
-                    fragment = QuestionFragment.newInstance(LoadData.getQuestions().get(0), 0, "0");
+                    fragment = QuestionFragment.newInstance(LoadData.getQuestions().remove(0), 0, "0");
                     manager.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
                 }
             } else {
@@ -63,6 +66,7 @@ public class QuizMainActivity extends AppCompatActivity {
             }
         } catch (IndexOutOfBoundsException e) {
             Log.d("IndexOutOfException", e.getMessage());
+            Toast.makeText(this, "Please wait the questions is loading ...", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -129,8 +133,17 @@ public class QuizMainActivity extends AppCompatActivity {
 //        RewardedVideoAd.pause(this);
 //        //stop service and stop music
 //        stopService(new Intent(QuizMainActivity.this, SoundService.class));
+//
 //    }
-////
+
+//    @Override
+//    protected void onUserLeaveHint() {
+//        super.onUserLeaveHint();
+//        finish();
+//        System.exit(0);
+//    }
+
+    ////
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
@@ -145,4 +158,6 @@ public class QuizMainActivity extends AppCompatActivity {
 ////        stopService(new Intent(QuizMainActivity.this, SoundService.class));
 ////        super.onDestroy();
 ////    }
+
+
 }
