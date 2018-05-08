@@ -6,8 +6,6 @@
         <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColor">@color/textBgColor</item>
-        <item name="android:color">@color/textBgColor</item>
     </style>
 
 
@@ -17,4 +15,12 @@
         <item name="android:minHeight">10dip</item>
         <item name="android:maxHeight">20dip</item>
     </style>
+    <style name="FacebookLoginButton">
+        <item name="android:background">@drawable/com_facebook_button_background</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+
 </resources>

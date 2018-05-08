@@ -24,6 +24,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -64,7 +65,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private EditText mPasswordView;
     private Button loginButton;
     private SignInButton signIn;
-    private ProgressBar barProgress;
     private FirebaseAuth mAuth;
     private String AUTHTAG="Auth_Tag";
     public static final String TAG="GoogleActivity";
@@ -84,9 +84,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mEmailView=findViewById(R.id.login_name);
         mPasswordView=findViewById(R.id.login_password);
         loginButton=findViewById(R.id.login_button);
-        barProgress=findViewById(R.id.login_progress);
+
         signIn = (SignInButton) findViewById(R.id.google_sign_in_button);
 
+        for (int i = 0; i < signIn.getChildCount(); i++) {
+            View v = signIn.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(R.string.google_login);
+                return;
+            }
+        }
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -180,8 +189,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onRestart() {
         super.onRestart();
-        barProgress.setVisibility(View.INVISIBLE);
-        loginButton.setVisibility(View.VISIBLE);
+
     }
 
     public void loginClicked(View view) {
@@ -189,8 +197,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mPasswordView=findViewById(R.id.login_password);
         String email=mEmailView.getText().toString();
         String password=mPasswordView.getText().toString();
-        barProgress.setVisibility(View.VISIBLE);
-        loginButton.setVisibility(View.INVISIBLE);
+
 
 
         if(!email.matches("")&&!password.matches("")){
@@ -210,8 +217,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             }else {
 
                                 Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
-                                barProgress.setVisibility(View.INVISIBLE);
-                                loginButton.setVisibility(View.VISIBLE);
+
                             }
                         }
                     });
@@ -227,8 +233,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     });
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                    barProgress.setVisibility(View.INVISIBLE);
-                    loginButton.setVisibility(View.VISIBLE);
+
                 }
 
             }else {
@@ -243,8 +248,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-                barProgress.setVisibility(View.INVISIBLE);
-                loginButton.setVisibility(View.VISIBLE);
+
             }
 
 
@@ -260,8 +264,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             });
             AlertDialog dialog = builder.create();
             dialog.show();
-            barProgress.setVisibility(View.INVISIBLE);
-            loginButton.setVisibility(View.VISIBLE);
+
 
         }
 

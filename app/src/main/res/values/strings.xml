@@ -62,7 +62,10 @@
 <string name="fb_login_protocol_scheme">fb441835156237486</string>
 <string name="have_account">This Email have existing account</string>
     <string name="link_fb">Do you want to link Facebook to the existing account ?</string>
-
+    <string name="google_login">Login with Google</string>
+    <string name="register">Register with Email and password?</string>
+    <string name="reset">Forgot password?</string>
+    <string name="or">OR</string>
 
 
 </resources>
