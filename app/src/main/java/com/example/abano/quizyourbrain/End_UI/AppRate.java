@@ -11,15 +11,15 @@ import android.widget.Button;
 import com.example.abano.quizyourbrain.R;
 
 public class AppRate {
-    private final static String APP_TITLE = "Quiz";// App Name
+    private final static String APP_TITLE = "Quiz money";// App Name
     private final static String APP_NAME = "com.example.abano.quizyourbrain";// Package Name
 
-    private final static int DAYS_UNTIL_PROMPT = 0;//Min number of days
-    private final static int LAUNCHES_UNTIL_PROMPT = 0;//Min number of launches
+    private final static int DAYS_UNTIL_PROMPT = 3;//Min number of days
+    private final static int LAUNCHES_UNTIL_PROMPT = 3;//Min number of launches
 
     public static void app_launched(Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
-        if (prefs.getBoolean("dont_show_again", false)) {
+        if (prefs.getBoolean("dontshowagain", false)) {
             return;
         }
 
@@ -43,11 +43,8 @@ public class AppRate {
                 showRateDialog(mContext, editor);
             }
         }
-
-        editor.apply();
     }
-
-    public static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
+    private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
         final Dialog dialog = new Dialog(mContext);
         dialog.setContentView(R.layout.rate_dialog);
         dialog.setTitle("Rate " + APP_TITLE);

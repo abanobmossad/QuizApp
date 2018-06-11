@@ -31,12 +31,16 @@
     <string name="score">Your score is </string>
     <string name="comAns">Enter the right answer</string>
     <string name="leaveApp">Do you really want to leave this question!!</string>
-    <string name="useCoins">Do you want use 10 coins?</string>
+    <string name="useCoins">Do you want use 5 coins?</string>
     <string name="Yes">Yes</string>
     <string name="gameOver">Game Over</string>
     <string name="play">Play</string>
+    <string name="OK">OK</string>
+    <string name="phone">Enter your phone number </string>
+    <string name="mailSubjectRewarded">Rewarded User</string>
+    <string name="mailMessageRewarded">Hello, this number has been answer to all the questions the number is :</string>
     <string name="congrt">Congratulation you win</string>
-    <string name="winningInfo">We send email to reserve your reward</string>
+    <string name="winningInfo">We send email to reserve your reward \n play again!</string>
     <string name="submitComplete">submit</string>
     <string name="submitCompleteCheck">Please check your answers</string>
 

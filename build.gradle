@@ -5,13 +5,12 @@ buildscript {
     repositories {
         google()
         jcenter()
+
     }
     dependencies {
         // Add this line
         classpath 'com.google.gms:google-services:3.2.0'
         classpath 'com.android.tools.build:gradle:3.1.2'
-        
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -23,7 +22,8 @@ allprojects {
         jcenter()
         maven {
             url "https://maven.google.com" // Google's Maven repository
-        }
+            }
+        maven { url "https://maven.java.net/content/groups/public/" }
     }
 }
 

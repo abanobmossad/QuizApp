@@ -45,16 +45,50 @@
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/emText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/congText"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="@string/winningInfo"
-        android:textColor="@color/textBgColor"
-        android:textSize="15sp" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/phoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/edit_text_style"
+            android:digits="0123456789+"
+            android:hint="@string/phone"
+            android:inputType="phone"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:textAlignment="center"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/sendMail"
+            android:layout_width="60dp"
+
+            android:layout_height="40dp"
+            android:background="@drawable/button_default_style"
+            android:text="@string/OK"
+            android:textColor="@color/textBgColor" />
+
+        <TextView
+            android:id="@+id/winNotify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/winningInfo"
+            android:textColor="@color/textBgColor"
+            android:textSize="18sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/playBtn"
@@ -75,10 +109,10 @@
         android:id="@+id/share_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/playBtn"
-        android:padding="10dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/share_btn_style"
-        android:src="@drawable/share_btn"/>
+        android:padding="10dp"
+        android:src="@drawable/share_btn" />
 </RelativeLayout>

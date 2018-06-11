@@ -32,7 +32,11 @@ public class QuizMainActivity extends AppCompatActivity {
         String user_id = intent.getStringExtra("user_id");
         LoadData.getQuestions().clear();
         // do the retrieving  data in background from firebase
-        new LoadData(this, user_id).execute();
+        if (isOnline()) {
+            new LoadData(this, user_id).execute();
+        } else {
+            noInternetDialog(this);
+        }
         AppRate.app_launched(this);
         // get in full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -40,9 +40,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,15 +50,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".QuizMainActivity"
-            android:label="@string/title_activity_quiz_main" />
+            android:label="@string/title_activity_quiz_main"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".QuestionControl.AddQuestion" />
-
-        <service
-            android:name=".End_UI.SoundService"
-            android:enabled="true" />
     </application>
 
 </manifest>

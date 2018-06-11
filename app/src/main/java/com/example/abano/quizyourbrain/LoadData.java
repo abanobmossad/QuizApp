@@ -42,6 +42,7 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
         super.onPreExecute();
         processDialog = new ProgressDialog(context);
         processDialog.setMessage("Loading Questions...");
+        processDialog.setCanceledOnTouchOutside(false);
         processDialog.show();
     }
 
@@ -59,7 +60,7 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void McqFirebaseConnection() {
         DatabaseReference questionsDatabase = FirebaseDatabase.getInstance().getReference("flamelink/environments/production/content/addNewQuestion/en-US");
-        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions");
+        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions/MCQ");
         questionsDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -86,11 +87,14 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void generateAllMcqQuestions(DataSnapshot dataSnapshot, DataSnapshot visitedQuestions) {
         int i = 0;
+        Long visitedCount =visitedQuestions.getChildrenCount();
+        Long dataCount =dataSnapshot.getChildrenCount();
+        Long displayCount =dataCount-visitedCount;
         for (DataSnapshot questionSnapshot : dataSnapshot.getChildren()) {
             if (mcq.size() >= number_mcq)
                 break;
             Long id = (Long) questionSnapshot.child("id").getValue();
-            if (visitedQuestions.hasChild(id.toString()))
+            if ((visitedQuestions.hasChild(id.toString())) && !visitedCount.equals(dataCount) && displayCount>=number_mcq)
                 continue;
             ArrayList<Choice> questionChoices = new ArrayList<>();
             // get question data
@@ -137,7 +141,7 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void completeFirebaseConnection() {
         DatabaseReference questionsDatabase = FirebaseDatabase.getInstance().getReference("flamelink/environments/production/content/completeQuestions/en-US");
-        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions");
+        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions/complete");
         questionsDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -164,11 +168,14 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void generateAllCompleteQuestions(DataSnapshot dataSnapshot, DataSnapshot visitedQuestions) {
         int i = 0;
+        Long visitedCount =visitedQuestions.getChildrenCount();
+        Long dataCount =dataSnapshot.getChildrenCount();
+        Long displayCount =dataCount-visitedCount;
         for (DataSnapshot questionSnapshot : dataSnapshot.getChildren()) {
             if (complete.size() >= number_complete)
                 break;
             Long id = (Long) questionSnapshot.child("id").getValue();
-            if (visitedQuestions.hasChild(id.toString()))
+            if ((visitedQuestions.hasChild(id.toString())) && !visitedCount.equals(dataCount) && displayCount>=number_complete)
                 continue;
             ArrayList<Choice> questionChoices = new ArrayList<>();
             // get question data
@@ -216,7 +223,7 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void level6FirebaseConnection() {
         DatabaseReference questionsDatabase = FirebaseDatabase.getInstance().getReference("flamelink/environments/production/content/level6Questions/en-US");
-        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions");
+        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions/level6");
         questionsDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -243,11 +250,14 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void generateAllLevel6Questions(DataSnapshot dataSnapshot, DataSnapshot visitedQuestions) {
         int i = 0;
+        Long visitedCount =visitedQuestions.getChildrenCount();
+        Long dataCount =dataSnapshot.getChildrenCount();
+        Long displayCount =dataCount-visitedCount;
         for (DataSnapshot questionSnapshot : dataSnapshot.getChildren()) {
             if (highLevel6.size() >= number_level6)
                 break;
             Long id = (Long) questionSnapshot.child("id").getValue();
-            if (visitedQuestions.hasChild(id.toString()))
+            if ((visitedQuestions.hasChild(id.toString())) && !visitedCount.equals(dataCount) && displayCount>=number_level6)
                 continue;
             ArrayList<Choice> questionChoices = new ArrayList<>();
             // get question data
@@ -294,7 +304,7 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void level7FirebaseConnection() {
         DatabaseReference questionsDatabase = FirebaseDatabase.getInstance().getReference("flamelink/environments/production/content/level7Questions/en-US");
-        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions");
+        final DatabaseReference visitedDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + userId + "/visitedQuestions/level7");
         questionsDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -321,11 +331,14 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
 
     private void generateAllLevel7Questions(DataSnapshot dataSnapshot, DataSnapshot visitedQuestions) {
         int i = 0;
+        Long visitedCount =visitedQuestions.getChildrenCount();
+        Long dataCount =dataSnapshot.getChildrenCount();
+        Long displayCount =dataCount-visitedCount;
         for (DataSnapshot questionSnapshot : dataSnapshot.getChildren()) {
             if (highLevel7.size() >= number_level7)
                 break;
             Long id = (Long) questionSnapshot.child("id").getValue();
-            if (visitedQuestions.hasChild(id.toString()))
+            if ((visitedQuestions.hasChild(id.toString())) && !visitedCount.equals(dataCount)  && displayCount>=number_level7)
                 continue;
             ArrayList<Choice> questionChoices = new ArrayList<>();
             // get question data
@@ -366,7 +379,9 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
             i++;
         }
         questions.addAll(highLevel7);
-        processDialog.dismiss();
+        try {
+            processDialog.dismiss();
+        }catch (Exception ignored){}
     }
 
     public static ArrayList<Question> getQuestions() {

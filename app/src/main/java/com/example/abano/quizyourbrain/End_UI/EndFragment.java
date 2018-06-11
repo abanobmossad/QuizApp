@@ -3,14 +3,17 @@ package com.example.abano.quizyourbrain.End_UI;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.abano.quizyourbrain.Mailing;
 import com.example.abano.quizyourbrain.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -87,6 +90,9 @@ public class EndFragment extends Fragment {
         } else {
             view = inflater.inflate(R.layout.fragment_win, container, false);
             Button button = view.findViewById(R.id.playBtn);
+            final Button sendEmail = view.findViewById(R.id.sendMail);
+            final EditText phoneNumber = view.findViewById(R.id.phoneNumber);
+            final TextView sendInfo = view.findViewById(R.id.winNotify);
             ImageView shareBtn = view.findViewById(R.id.share_btn);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -106,9 +112,13 @@ public class EndFragment extends Fragment {
                     shareBtnActivation();
                 }
             });
+            sendEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sendEmail(phoneNumber, sendInfo, sendEmail);
+                }
+            });
         }
-
-
         return view;
     }
 
@@ -124,6 +134,34 @@ public class EndFragment extends Fragment {
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
+    private void sendEmail(EditText phoneNumber, TextView sendInfo, Button ok) {
+        String number = phoneNumber.getText().toString();
+        String username = "quizchallenge47@gmail.com";//change accordingly
+        String password = "quizchallenge";//change accordingly
+        String from = "quizchallenge47@gmail.com";
+        String to = "quizchallenge47@gmail.com";
+        String subject = getResources().getString(R.string.mailSubjectRewarded);
+
+        if (phoneNumber.getText().toString().isEmpty()) {
+            Toast.makeText(getContext(), "Please enter your phone number!!", Toast.LENGTH_SHORT).show();
+        } else {
+            if (numberValidation(number)) {
+                String num = PhoneNumberUtils.formatNumber(number);
+                String messageBody = getResources().getString(R.string.mailMessageRewarded) + " " + num;
+                Mailing sendMail = new Mailing(getContext(), from, to, username, password, subject, messageBody);
+                sendMail.sendEmail();
+                sendInfo.setVisibility(View.VISIBLE);
+                phoneNumber.setVisibility(View.GONE);
+                ok.setVisibility(View.GONE);
+            } else {
+                Toast.makeText(getContext(), "Please enter a valid phone number", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private boolean numberValidation(String number) {
+        return (number.substring(0, 3).equals("012") || number.substring(0, 3).equals("011") || number.substring(0, 3).equals("010")) && number.length() == 11;
+    }
 
     private void loadUserMaxScore() {
         Intent intent = getActivity().getIntent();
@@ -147,3 +185,4 @@ public class EndFragment extends Fragment {
         });
     }
 }
+

@@ -44,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -331,6 +332,7 @@ public class QuestionFragment extends Fragment {
                             @Override
                             public void run() {
                                 losing();
+                                myCountDownTimer.cancel();
                             }
                         }, 2000);
                     }
@@ -366,8 +368,8 @@ public class QuestionFragment extends Fragment {
     // set the data and display
     private void generateNextQuestion(final int questionNumber) {
         try {
-            myCountDownTimer.cancel();
             if (isOnline()) {
+                myCountDownTimer.cancel();
                 int next_question = questionNumber + 1;
                 String nScore = changeScore();
                 Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().remove(0), next_question, nScore);
@@ -438,10 +440,20 @@ public class QuestionFragment extends Fragment {
     }
 
     private void addVisitedQuestion() {
-        Intent intent = getActivity().getIntent();
+        Intent intent = Objects.requireNonNull(getActivity()).getIntent();
         String id = intent.getStringExtra("user_id");
-        DatabaseReference usersDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/visitedQuestions");
-        usersDatabase.child(questionId.toString()).setValue(questionId.toString());
+        DatabaseReference MCQDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/visitedQuestions/MCQ");
+        DatabaseReference completeDatabase = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/visitedQuestions/complete");
+        DatabaseReference level6Database = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/visitedQuestions/level6");
+        DatabaseReference level7Database = FirebaseDatabase.getInstance().getReference("flamelink/Users/" + id + "/visitedQuestions/level7");
+        if (questionType.equals("MCQ"))
+            MCQDatabase.child(questionId.toString()).setValue(questionId.toString());
+        else if (questionType.equals("complete"))
+            completeDatabase.child(questionId.toString()).setValue(questionId.toString());
+        else if (questionLevel.equals("6"))
+            level6Database.child(questionId.toString()).setValue(questionId.toString());
+        else if (questionLevel.equals("7"))
+            level7Database.child(questionId.toString()).setValue(questionId.toString());
 
     }
 
@@ -488,7 +500,6 @@ public class QuestionFragment extends Fragment {
             @Override
             public void onRewardedVideoAdLeftApplication() {
                 myCountDownTimer.resume();
-                Toast.makeText(getContext(), "onRewardedVideoAdLeftApplication", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -584,8 +595,8 @@ public class QuestionFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String userCoins = (String) dataSnapshot.getValue();
                     if (userCoins != null) {
-                        String useCoinsCalc = String.valueOf(Integer.parseInt(userCoins) - 10);
-                        if (Integer.parseInt(userCoins) >= 10) {
+                        String useCoinsCalc = String.valueOf(Integer.parseInt(userCoins) - 5);
+                        if (Integer.parseInt(userCoins) >= 5) {
                             generateNextQuestion(questionNumber);
                             coinDatabase.setValue(useCoinsCalc);
                             coinsTv.setText(useCoinsCalc);
@@ -595,7 +606,7 @@ public class QuestionFragment extends Fragment {
                             }
                         }
                     } else {
-                        Toast.makeText(getContext(), "You don't have any coins yet", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "You don't have any coins yet! watch AD to get more", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -639,4 +650,11 @@ public class QuestionFragment extends Fragment {
         return String.valueOf(calcScoreTv);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (questionTimeBar.getProgress()==0){
+            losing();
+        }
+    }
 }
