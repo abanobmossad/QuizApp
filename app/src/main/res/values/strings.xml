@@ -62,14 +62,23 @@
     <!--tool tips-->
     <string name="adsTip">Watch Ad to earn more coins</string>
     <string name="coinsTip">User your coins to skip this question</string>
-<string name="facebook_app_id">441835156237486</string>
-<string name="fb_login_protocol_scheme">fb441835156237486</string>
-<string name="have_account">This Email have existing account</string>
+    <string name="facebook_app_id">441835156237486</string>
+    <string name="fb_login_protocol_scheme">fb441835156237486</string>
+    <string name="have_account">This Email have existing account</string>
     <string name="link_fb">Do you want to link Facebook to the existing account ?</string>
     <string name="google_login">Login with Google</string>
-    <string name="register">Register with Email and password?</string>
+    <string name="register">Register with Email</string>
     <string name="reset">Forgot password?</string>
     <string name="or">OR</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="not_match">Password does not match the confirm password</string>
+    <string name="Emailnottrue">Cannot send the message. Verify the e-mail address</string>
+    <string name="youraccountiscreated">open your e-mail to verify your accunt thin login normally</string>
+    <string name="not_verified">E-mail is not verified. go to e-mail and click the link to verify it</string>
+    <string name="resetpass">reset password</string>
+    <string name="passwordsent">The password is sent to this E-mail.</string>
+    <string name="usernameorpassword">username or password is incorrect</string>
 
 
 </resources>

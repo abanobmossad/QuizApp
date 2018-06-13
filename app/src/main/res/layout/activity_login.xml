@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,78 +8,43 @@
     tools:context="com.example.abano.quizyourbrain.LoginActivity">
 
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/ic_launcher_round"
+        android:layout_gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        />
+
+
+
+
     <LinearLayout
-        android:layout_weight="2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:padding="15dp"
-        >
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebook_sign_in_button"
-            style="@style/com_facebook_button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/com_facebook_button_icon"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:text="@string/com_facebook_loginview_log_in_button_long" />
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/google_sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="59dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            />
-
-    </LinearLayout>
-<RelativeLayout
-    android:layout_weight="1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
+        android:layout_marginBottom="10dp"
     >
 
-    <TextView
-        android:id="@+id/or"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:paddingBottom="10dp"
-        android:text="@string/or"
-        android:layout_gravity="center"
-        />
+
     <AutoCompleteTextView
         android:id="@+id/login_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/or"
         android:background="@drawable/edit_text_style"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
-       />
-    <TextView
-        android:id="@+id/betweenlogin"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_below="@+id/login_name"
-        android:paddingTop="10dp"
+        android:layout_marginBottom="5dp"       />
 
-        />
     <EditText
         android:id="@+id/login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/betweenlogin"
         android:background="@drawable/edit_text_style"
         android:ems="10"
         android:hint="@string/prompt_password"
@@ -90,42 +54,81 @@
         android:id="@+id/reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/login_password"
         android:text="@string/reset"
         android:paddingTop="20dp"
-
+        android:layout_gravity="right"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        style="?android:attr/borderlessButtonStyle"
         />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/reset"
-        >
         <Button
             android:id="@+id/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:background="@drawable/buttonshape"
+            android:layout_width="200dp"
+            android:layout_height="35dp"
+            android:background="@drawable/yellow_btn_style"
             android:layout_above="@+id/register"
+            android:layout_gravity="center"
             android:onClick="loginClicked"
             android:text="@string/action_sign_in_short"
             android:textColor="@color/whiteBG"
+            android:layout_marginBottom="5dp"
             />
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="35dp"
+            android:background="@drawable/yellow_btn_style"
+            android:text="@string/register"
+            android:textColor="@color/whiteBG"
+            android:layout_gravity="center"
+            android:onClick="gotoregister"
+            />
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
         <TextView
-            android:id="@+id/register"
+            android:id="@+id/or"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
-            android:text="@string/register"
-            style="?android:listSeparatorTextViewStyle"
+            android:text="@string/or"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
             />
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_sign_in_button"
+            android:layout_width="200dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
 
-    </RelativeLayout>
+            />
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebook_sign_in_button"
+            style="@style/com_facebook_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/com_facebook_button_icon"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:text="@string/com_facebook_loginview_log_in_button_long" />
 
-</RelativeLayout>
+
+    </LinearLayout>
 
 
-</android.support.v7.widget.LinearLayoutCompat>
+
+
+
+
+</LinearLayout>
+
+

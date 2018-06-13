@@ -60,6 +60,7 @@ import java.util.regex.Pattern;
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+
     private static final int REQUEST_READ_CONTACTS = 0;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -73,6 +74,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth.AuthStateListener mAuthenListner;
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mCallbackManager ;
+    private TextView mforgot_password;
 
 
 
@@ -84,19 +86,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mEmailView=findViewById(R.id.login_name);
         mPasswordView=findViewById(R.id.login_password);
         loginButton=findViewById(R.id.login_button);
+        mforgot_password=findViewById(R.id.reset);
+
+        mforgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resetActivity=new Intent(getApplicationContext(),Reset.class);
+                startActivity(resetActivity);
+            }
+        });
 
         signIn = (SignInButton) findViewById(R.id.google_sign_in_button);
-
-        for (int i = 0; i < signIn.getChildCount(); i++) {
-            View v = signIn.getChildAt(i);
-
-            if (v instanceof TextView) {
-                TextView tv = (TextView) v;
-                tv.setText(R.string.google_login);
-                return;
-            }
-        }
-
+        TextView textView = (TextView) signIn.getChildAt(0);
+        textView.setText(R.string.continue_with_google);
 
         mAuth=FirebaseAuth.getInstance();
 
@@ -156,6 +158,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
                 mainActivity.putExtra("user_id",currentUser.getUid());
                 startActivity(mainActivity);
+                finish();
             }
 
         }else {
@@ -203,20 +206,26 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if(!email.matches("")&&!password.matches("")){
             if(isEmailValid(email)){
                 if(isOnline()){
+
                     mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()){
                                 FirebaseUser currentUser = mAuth.getCurrentUser();
                                 if(currentUser!=null){
-                                    Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
-                                    mainActivity.putExtra("user_id",currentUser.getUid());
-                                    mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(mainActivity);
+                                    checkIfEmailVerified();
                                 }
                             }else {
-
-                                Toast.makeText(getApplicationContext(),"notloged",Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                builder.setMessage(R.string.usernameorpassword)
+                                        .setTitle(R.string.app_name);
+                                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User clicked OK button
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
 
                             }
                         }
@@ -315,6 +324,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                     mainActivity.putExtra("user_id",currentUser.getUid());
                                     mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(mainActivity);
+                                    finish();
                                 }
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -382,6 +392,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                     mainActivity.putExtra("user_id",currentUser.getUid());
                                     mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(mainActivity);
+                                    finish();
                                 }
 
                             } else {
@@ -417,6 +428,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             mainActivity.putExtra("user_id",currentUser.getUid());
                                             mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(mainActivity);
+                                            finish();
                                         }
                                     } else {
                                         Log.w(TAG, "linkWithCredential:failure", task.getException());
@@ -432,7 +444,43 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             dialog.show();
         }
 
+    public void gotoregister(View view) {
+        Intent RegisterActivity=new Intent(getApplicationContext(),Register.class);
+        startActivity(RegisterActivity);
     }
+    private void checkIfEmailVerified()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified())
+        {
+            Intent mainActivity = new Intent(getApplicationContext(),QuizMainActivity.class);
+            mainActivity.putExtra("user_id",user.getUid());
+            mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(mainActivity);
+            finish();
+        }
+        else
+        {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.not_verified)
+                    .setTitle(R.string.app_name);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            FirebaseAuth.getInstance().signOut();
+
+            //restart this activity
+
+        }
+    }
+
+}
 
 
 
