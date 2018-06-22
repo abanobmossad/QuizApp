@@ -327,7 +327,11 @@ public class QuestionFragment extends Fragment {
                     } else {
                         wrongAnswerEffect(actionBtn);
                         // show the right answer
-                        rightAnswerEffect(rightAnswerBtn.get(0));
+                        try {
+                            rightAnswerEffect(rightAnswerBtn.get(0));
+                        }catch (IndexOutOfBoundsException e){
+                            losing();
+                        }
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
