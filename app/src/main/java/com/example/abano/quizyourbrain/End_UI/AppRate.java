@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.example.abano.quizyourbrain.R;
 
 public class AppRate {
-    private final static String APP_TITLE = "Quiz money";// App Name
+    private final static String APP_TITLE = "Quiz Money";// App Name
     private final static String APP_NAME = "com.example.abano.quizyourbrain";// Package Name
 
     private final static int DAYS_UNTIL_PROMPT = 3;//Min number of days
@@ -44,6 +44,7 @@ public class AppRate {
             }
         }
     }
+
     private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
         final Dialog dialog = new Dialog(mContext);
         dialog.setContentView(R.layout.rate_dialog);
@@ -53,7 +54,11 @@ public class AppRate {
         Button b1 = dialog.findViewById(R.id.rateIt);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_NAME)));
+                try {
+                    mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_NAME)));
+                }catch (android.content.ActivityNotFoundException anfe){
+                    mContext. startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + APP_NAME)));
+                }
                 dialog.dismiss();
             }
         });

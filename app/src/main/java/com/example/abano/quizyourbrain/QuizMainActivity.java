@@ -49,11 +49,11 @@ public class QuizMainActivity extends AppCompatActivity {
         // load max score
 
         // initialize ads
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, "ca-app-pub-8785070713291628~8480745276");
         RewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         loadRewardedVideoAd();
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-8785070713291628/2872444345");
 
         more_info=(ImageView)findViewById(R.id.more_info);
 
@@ -133,7 +133,7 @@ public class QuizMainActivity extends AppCompatActivity {
     // loading video ads
     public static void loadRewardedVideoAd() {
         if (!RewardedVideoAd.isLoaded()) {
-            RewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+            RewardedVideoAd.loadAd("ca-app-pub-8785070713291628/3732897194", new AdRequest.Builder().build());
         }
     }
 

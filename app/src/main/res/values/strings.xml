@@ -6,7 +6,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="title_activity_quiz_main">QuizUP</string>
+    <string name="title_activity_quiz_main">Quiz Money</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="main_question">Which Quiz App rewards knowledge with real prizes?</string>
