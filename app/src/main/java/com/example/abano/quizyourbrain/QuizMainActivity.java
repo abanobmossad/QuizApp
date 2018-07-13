@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.abano.quizyourbrain.End_UI.AppRate;
@@ -25,6 +26,7 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 public class QuizMainActivity extends AppCompatActivity {
     private static RewardedVideoAd RewardedVideoAd;
     private static InterstitialAd mInterstitialAd;
+    private ImageView more_info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,26 @@ public class QuizMainActivity extends AppCompatActivity {
         loadRewardedVideoAd();
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+        more_info=(ImageView)findViewById(R.id.more_info);
+
+        more_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(QuizMainActivity.this);
+
+                builder.setTitle(getString(R.string.thanks));
+
+                builder.setMessage(getString(R.string.developer)+"\n\n"+getString(R.string.abanob)+"\n\n"+getString(R.string.abanob_mail)+"\n\n"+
+                getString(R.string.mostafa)+"\n\n"+getString(R.string.mostafa_mail));
+
+
+                AlertDialog diag = builder.create();
+
+                //Display the message!
+                diag.show();
+            }
+        });
 
     }
 
