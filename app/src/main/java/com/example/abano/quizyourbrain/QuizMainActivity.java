@@ -27,6 +27,7 @@ public class QuizMainActivity extends AppCompatActivity {
     private static RewardedVideoAd RewardedVideoAd;
     private static InterstitialAd mInterstitialAd;
     private ImageView more_info;
+    public static Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +63,10 @@ public class QuizMainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(QuizMainActivity.this);
 
-                builder.setTitle(getString(R.string.thanks));
+                builder.setTitle(getString(R.string.thanks)+"\n");
 
-                builder.setMessage(getString(R.string.developer)+"\n\n"+getString(R.string.abanob)+"\n\n"+getString(R.string.abanob_mail)+"\n\n"+
-                getString(R.string.mostafa)+"\n\n"+getString(R.string.mostafa_mail));
+                builder.setMessage(getString(R.string.developer)+"\n\n"+getString(R.string.abanob)+"\n\n\t"+getString(R.string.abanob_mail)+"\n\n"+
+                getString(R.string.mostafa)+"\n\n\t"+getString(R.string.mostafa_mail));
 
 
                 AlertDialog diag = builder.create();
@@ -92,7 +93,11 @@ public class QuizMainActivity extends AppCompatActivity {
             }
         } catch (IndexOutOfBoundsException e) {
             Log.d("IndexOutOfException", e.getMessage());
-            Toast.makeText(this, "Please wait the questions is loading ...", Toast.LENGTH_LONG).show();
+            if (mToast != null) {
+                mToast.cancel();
+            }
+            mToast=Toast.makeText(this, "Please wait the questions is loading ...", Toast.LENGTH_LONG);
+            mToast.show();
         }
     }
 
@@ -120,7 +125,11 @@ public class QuizMainActivity extends AppCompatActivity {
             System.exit(0);
         }
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast=Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT);
+        mToast.show();
 
         new Handler().postDelayed(new Runnable() {
             @Override

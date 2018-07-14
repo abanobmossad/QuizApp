@@ -80,11 +80,11 @@
     <string name="passwordsent">The password is sent to this E-mail.</string>
     <string name="usernameorpassword">username or password is incorrect</string>
     <string name="more_info">More Information</string>
-    <string name="thanks">Thanks for downloading our App</string>
+    <string name="thanks">Thanks for using our App</string>
     <string name="report">This is a beta version of tha APP you can report our developer for any issues or suggestions</string>
-    <string name="developer">This is a beta version of tha APP you can report our developer for any issues or suggestions</string>
-    <string name="abanob">Abanob Mossad</string>
-    <string name="mostafa">Mustafa Sherif</string>
+    <string name="developer">This is a beta version of tha APP you can report our developers for any issues or suggestions</string>
+    <string name="abanob">- Abanob Mossad</string>
+    <string name="mostafa">- Mustafa Sherif</string>
     <string name="mostafa_mail">mostafashiref96@yahoo.com</string>
     <string name="abanob_mail">mossadabanob@gmail.com</string>
 

@@ -87,6 +87,7 @@ public class QuestionFragment extends Fragment {
     private TextView scoreTv;
     private String score;
     private boolean pressed = false;
+    public static Toast mToast;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -279,7 +280,12 @@ public class QuestionFragment extends Fragment {
                     if (editText.getText().toString().equalsIgnoreCase(choice.getAnsTitle())) {
                         check++;
                     } else {
-                        Toast.makeText(getActivity(), R.string.submitCompleteCheck, Toast.LENGTH_SHORT).show();
+                        if (mToast != null) {
+                            mToast.cancel();
+                        }
+                        mToast=Toast.makeText(getActivity(), R.string.submitCompleteCheck, Toast.LENGTH_LONG);
+                        mToast.show();
+
                         break;
                     }
                     i++;
@@ -287,7 +293,11 @@ public class QuestionFragment extends Fragment {
                 if (check == choices_list.size()) {
                     generateNextQuestion(questionNumber);
                 } else
-                    Toast.makeText(getActivity(), R.string.submitCompleteCheck, Toast.LENGTH_SHORT).show();
+                if (mToast != null) {
+                    mToast.cancel();
+                }
+                mToast=Toast.makeText(getActivity(), R.string.submitCompleteCheck, Toast.LENGTH_LONG);
+                mToast.show();
             }
         });
 
@@ -610,7 +620,11 @@ public class QuestionFragment extends Fragment {
                             }
                         }
                     } else {
-                        Toast.makeText(getContext(), "You don't have any coins yet! watch AD to get more", Toast.LENGTH_SHORT).show();
+                        if (mToast != null) {
+                            mToast.cancel();
+                        }
+                        mToast=Toast.makeText(getContext(), "You don't have any coins yet! watch AD to get more", Toast.LENGTH_SHORT);
+                        mToast.show();
                     }
                 }
 

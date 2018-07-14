@@ -29,6 +29,7 @@ public class EndFragment extends Fragment {
     public static String LOSE = "LOSE";
     private String endMood;
     private String score;
+    public static Toast mToast;
 
     public EndFragment() {
         // Required empty public constructor
@@ -83,7 +84,11 @@ public class EndFragment extends Fragment {
             shareBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Please wait the share dialog is loading...", Toast.LENGTH_LONG).show();
+                    if (mToast != null) {
+                        mToast.cancel();
+                    }
+                    mToast=Toast.makeText(getActivity(), "Please wait the share dialog is loading...", Toast.LENGTH_LONG);
+                    mToast.show();
                     shareBtnActivation();
                 }
             });
@@ -108,7 +113,11 @@ public class EndFragment extends Fragment {
             shareBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Please wait the share dialog is loading...", Toast.LENGTH_LONG).show();
+                    if (mToast != null) {
+                        mToast.cancel();
+                    }
+                    mToast=Toast.makeText(getActivity(), "Please wait the share dialog is loading...", Toast.LENGTH_LONG);
+                    mToast.show();
                     shareBtnActivation();
                 }
             });
@@ -154,7 +163,11 @@ public class EndFragment extends Fragment {
                 phoneNumber.setVisibility(View.GONE);
                 ok.setVisibility(View.GONE);
             } else {
-                Toast.makeText(getContext(), "Please enter a valid phone number", Toast.LENGTH_LONG).show();
+                if (mToast != null) {
+                    mToast.cancel();
+                }
+                mToast=Toast.makeText(getActivity(), "Please enter a valid phone number", Toast.LENGTH_LONG);
+                mToast.show();
             }
         }
     }
