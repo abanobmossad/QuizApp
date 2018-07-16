@@ -3,13 +3,11 @@ package com.quizMoney.abanob.quizyourbrain;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -23,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.abano.quizyourbrain", appContext.getPackageName());
+        assertEquals(" com.quizMoney.abanob.quizyourbrain", appContext.getPackageName());
     }
 }
