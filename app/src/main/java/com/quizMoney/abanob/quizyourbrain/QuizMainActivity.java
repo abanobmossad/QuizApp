@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain;
+package com.quizMoney.abanob.quizyourbrain;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.abano.quizyourbrain.End_UI.AppRate;
+import com.quizMoney.abanob.quizyourbrain.End_UI.AppRate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -53,8 +53,6 @@ public class QuizMainActivity extends AppCompatActivity {
         MobileAds.initialize(this, "ca-app-pub-8785070713291628~8480745276");
         RewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         loadRewardedVideoAd();
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-8785070713291628/2872444345");
 
         more_info=(ImageView)findViewById(R.id.more_info);
 
@@ -146,15 +144,8 @@ public class QuizMainActivity extends AppCompatActivity {
         }
     }
 
-    public static void loadPopupAd() {
-        if (!mInterstitialAd.isLoaded()) {
-            mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        }
-    }
 
-    public static InterstitialAd getInterstitialAd() {
-        return mInterstitialAd;
-    }
+
 
     public static RewardedVideoAd getRewardedVideoAd() {
         return RewardedVideoAd;

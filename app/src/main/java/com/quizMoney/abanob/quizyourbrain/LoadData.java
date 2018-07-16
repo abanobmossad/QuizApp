@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain;
+package com.quizMoney.abanob.quizyourbrain;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -6,8 +6,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.abano.quizyourbrain.Models.Choice;
-import com.example.abano.quizyourbrain.Models.Question;
+import com.quizMoney.abanob.quizyourbrain.Models.Choice;
+import com.quizMoney.abanob.quizyourbrain.Models.Question;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +42,6 @@ class LoadData extends AsyncTask<Void, Integer, Void> {
         super.onPreExecute();
         processDialog = new ProgressDialog(context);
         processDialog.setMessage("Loading Questions...");
-        processDialog.setCanceledOnTouchOutside(false);
         processDialog.show();
     }
 

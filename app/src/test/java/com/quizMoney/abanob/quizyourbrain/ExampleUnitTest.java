@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain;
+package com.quizMoney.abanob.quizyourbrain;
 
 import org.junit.Test;
 

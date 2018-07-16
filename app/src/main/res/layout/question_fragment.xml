@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
-    tools:context="com.example.abano.quizyourbrain.QuestionFragment">
+    tools:context="com.quizMoney.abanob.quizyourbrain.QuestionFragment">
 
     <RelativeLayout
         android:id="@+id/toolbar_top"

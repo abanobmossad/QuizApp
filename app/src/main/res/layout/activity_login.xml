@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/mainBackgroundColor"
-    tools:context="com.example.abano.quizyourbrain.LoginActivity">
+    tools:context="com.quizMoney.abanob.quizyourbrain.LoginActivity">
 
 
     <ImageView

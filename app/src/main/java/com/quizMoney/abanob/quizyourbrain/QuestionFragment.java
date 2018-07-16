@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain;
+package com.quizMoney.abanob.quizyourbrain;
 
 
 import android.content.DialogInterface;
@@ -23,12 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.abano.quizyourbrain.End_UI.EndFragment;
-import com.example.abano.quizyourbrain.Models.Choice;
-import com.example.abano.quizyourbrain.Models.Question;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
@@ -41,6 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.quizMoney.abanob.quizyourbrain.End_UI.EndFragment;
+import com.quizMoney.abanob.quizyourbrain.Models.Choice;
+import com.quizMoney.abanob.quizyourbrain.Models.Question;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -80,7 +79,6 @@ public class QuestionFragment extends Fragment {
     private ProgressBar questionTimeBar;
     private ImageView quesImage;
     private RewardedVideoAd RewardedVideoAd;
-    private InterstitialAd mInterstitialAd;
     private QuestionCountTimer myCountDownTimer;
     private boolean watchedQuestionAd = false;
     private TextView coinsTv;
@@ -117,9 +115,6 @@ public class QuestionFragment extends Fragment {
         // initialize the ads video
         RewardedVideoAd = QuizMainActivity.getRewardedVideoAd();
         watchingVideoCoinsAds();
-        //  Interstitial Ad
-        mInterstitialAd = QuizMainActivity.getInterstitialAd();
-        QuizMainActivity.loadPopupAd();
         //---------------------------
         if (getArguments() != null) {
             // question arguments
@@ -387,13 +382,6 @@ public class QuestionFragment extends Fragment {
                 int next_question = questionNumber + 1;
                 String nScore = changeScore();
                 Fragment nextFragment = QuestionFragment.newInstance(LoadData.getQuestions().remove(0), next_question, nScore);
-                // load Interstitial Ad
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("interstitial", "The interstitial wasn't loaded yet.");
-                }
-
 
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainer, nextFragment).commit();

@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain.End_UI;
+package com.quizMoney.abanob.quizyourbrain.End_UI;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,11 +8,11 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.abano.quizyourbrain.R;
+import com.quizMoney.abanob.quizyourbrain.R;
 
 public class AppRate {
     private final static String APP_TITLE = "Quiz Money";// App Name
-    private final static String APP_NAME = "com.example.abano.quizyourbrain";// Package Name
+    private final static String APP_NAME = "com.quizMoney.abanob.quizyourbrain";// Package Name
 
     private final static int DAYS_UNTIL_PROMPT = 3;//Min number of days
     private final static int LAUNCHES_UNTIL_PROMPT = 3;//Min number of launches

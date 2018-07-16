@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain.Models;
+package com.quizMoney.abanob.quizyourbrain.Models;
 
 import android.support.design.internal.ParcelableSparseArray;
 

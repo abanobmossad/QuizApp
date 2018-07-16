@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain.Models;
+package com.quizMoney.abanob.quizyourbrain.Models;
 
 import java.util.ArrayList;
 

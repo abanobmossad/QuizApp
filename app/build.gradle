@@ -8,7 +8,7 @@ android {
     }
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.abano.quizyourbrain"
+        applicationId "com.quizMoney.abanob.quizyourbrain"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1

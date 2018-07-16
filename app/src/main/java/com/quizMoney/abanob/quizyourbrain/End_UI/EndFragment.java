@@ -1,4 +1,4 @@
-package com.example.abano.quizyourbrain.End_UI;
+package com.quizMoney.abanob.quizyourbrain.End_UI;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.abano.quizyourbrain.Mailing;
-import com.example.abano.quizyourbrain.R;
+import com.quizMoney.abanob.quizyourbrain.Mailing;
+import com.quizMoney.abanob.quizyourbrain.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -133,7 +133,7 @@ public class EndFragment extends Fragment {
 
 
     private void shareBtnActivation() {
-        String APP_NAME = "com.example.abano.quizyourbrain";
+        String APP_NAME = "com.quizMoney.abanob.quizyourbrain";
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String appLink = "https://play.google.com/store/apps/details?id=" + APP_NAME + "  \n\n";
